@@ -1,30 +1,46 @@
-const supabaseUrl = 'YOUR_SUPABASE_URL_HERE';
-const supabaseKey = 'YOUR_SUPABASE_ANON_KEY_HERE';
+const supabaseUrl = 'https://bkimpnxonrdmxprpokqw.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJraW1wbnhvbnJkbXhwcnBva3F3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUyOTY3NDAsImV4cCI6MjA4MDg3Mjc0MH0.5thPd54zYNiHNEsyGa317wThumsnxu7znpZafPQIsqg';
 const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-let currentScheduleId = null;
+let selectedScheduleId = null;
+let selectedScheduleTitle = "";
+let addModal, optionsModal;
 
-// 1. Check if user is logged in
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+    addModal = new bootstrap.Modal(document.getElementById('addModal'));
+    optionsModal = new bootstrap.Modal(document.getElementById('optionsModal'));
+    checkUser();
+});
+
 async function checkUser() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) window.location.href = 'index.html';
     loadSidebar();
 }
 
-// 2. Create Schedule (Sidebar)
+// 1. Create Schedule
 async function createSchedule(type) {
-    const { data, error } = await supabase
-        .from('schedules')
-        .insert([{ title: `${type} Routine`, category: type, user_id: (await supabase.auth.getUser()).data.user.id }])
-        .select();
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    // Create name like "Everyday - Dec 10"
+    const dateStr = new Date().toLocaleDateString();
+    const defaultTitle = `${type} (${dateStr})`;
 
-    if (!error) loadSidebar();
+    const { error } = await supabase
+        .from('schedules')
+        .insert([{ title: defaultTitle, category: type, user_id: user.id }]);
+
+    if (error) alert("Error creating: " + error.message);
+    
+    addModal.hide(); // Hide modal
+    loadSidebar();   // Refresh list
 }
 
-// 3. Load Sidebar List
+// 2. Load Sidebar
 async function loadSidebar() {
     const { data: { user } } = await supabase.auth.getUser();
-    const { data, error } = await supabase
+    const { data } = await supabase
         .from('schedules')
         .select('*')
         .eq('user_id', user.id)
@@ -32,88 +48,112 @@ async function loadSidebar() {
 
     const list = document.getElementById('schedule-list');
     list.innerHTML = '';
-    
+
+    if(data.length === 0) list.innerHTML = '<p class="text-center text-muted mt-3">No schedules yet.</p>';
+
     data.forEach(sched => {
-        list.innerHTML += `
-            <div class="p-2 schedule-card border-bottom" onclick="openSchedule(${sched.id}, '${sched.title}')">
-                <strong>${sched.title}</strong><br>
-                <small class="text-secondary">${sched.category}</small>
-            </div>`;
+        const div = document.createElement('div');
+        div.className = 'schedule-item';
+        div.innerHTML = `<strong>${sched.title}</strong><br><small class="text-muted">${sched.category}</small>`;
+        
+        // Pag clinick, open options modal
+        div.onclick = () => showOptions(sched.id, sched.title);
+        list.appendChild(div);
     });
 }
 
-// 4. Open Schedule & Load Tasks
-async function openSchedule(id, title) {
-    currentScheduleId = id;
-    document.getElementById('empty-state').classList.add('d-none');
-    document.getElementById('editor-section').classList.remove('d-none');
-    
-    document.getElementById('schedule-title').value = title;
-    document.getElementById('display-title').innerText = title;
-
-    // Fetch tasks
-    const { data, error } = await supabase.from('tasks').select('*').eq('schedule_id', id).order('id', {ascending: true});
-    
-    const taskList = document.getElementById('task-list');
-    taskList.innerHTML = '';
-    data.forEach(task => addTaskRow(task.time_slot, task.activity, task.id));
+// 3. Show Options Modal
+function showOptions(id, title) {
+    selectedScheduleId = id;
+    selectedScheduleTitle = title;
+    document.getElementById('options-title').innerText = title;
+    optionsModal.show();
 }
 
-// 5. Add Task Row (UI Only)
-function addTaskRow(time = '', activity = '', id = null) {
+// 4. Enter Edit Mode (Start making schedule)
+async function enterEditMode() {
+    optionsModal.hide(); // Hide options
+    document.getElementById('empty-state').classList.add('d-none');
+    document.getElementById('editor-area').classList.remove('d-none');
+    
+    document.getElementById('current-title').innerText = selectedScheduleTitle;
+    document.getElementById('display-title').innerText = selectedScheduleTitle;
+
+    // Fetch Tasks
+    const { data } = await supabase.from('tasks').select('*').eq('schedule_id', selectedScheduleId).order('id');
+    const taskList = document.getElementById('task-list');
+    taskList.innerHTML = '';
+    
+    if(data) data.forEach(t => addTaskRow(t.time_slot, t.activity));
+}
+
+// 5. Rename
+async function renameSchedulePrompt() {
+    const newName = prompt("Enter new name:", selectedScheduleTitle);
+    if (newName && newName.trim() !== "") {
+        await supabase.from('schedules').update({ title: newName }).eq('id', selectedScheduleId);
+        selectedScheduleTitle = newName;
+        loadSidebar();
+        enterEditMode(); // Go straight to edit after rename
+    }
+}
+
+// 6. Delete
+async function deleteSchedule() {
+    if(confirm("Are you sure you want to delete this?")) {
+        await supabase.from('schedules').delete().eq('id', selectedScheduleId);
+        optionsModal.hide();
+        document.getElementById('editor-area').classList.add('d-none');
+        document.getElementById('empty-state').classList.remove('d-none');
+        loadSidebar();
+    }
+}
+
+// 7. Add Task Row (UI)
+function addTaskRow(time = '', act = '') {
     const div = document.createElement('div');
     div.className = 'row mb-2 task-row';
-    div.dataset.id = id || ''; // Store ID if it exists
     div.innerHTML = `
-        <div class="col-3"><input type="text" class="form-control time-input" value="${time}" placeholder="Time"></div>
-        <div class="col-8"><input type="text" class="form-control activity-input" value="${activity}" placeholder="Activity"></div>
+        <div class="col-3"><input type="text" class="form-control t-time" value="${time}" placeholder="Time"></div>
+        <div class="col-8"><input type="text" class="form-control t-act" value="${act}" placeholder="Activity"></div>
         <div class="col-1"><button class="btn btn-close mt-2" onclick="this.parentElement.parentElement.remove()"></button></div>
     `;
     document.getElementById('task-list').appendChild(div);
 }
 
-// 6. Save Tasks (Logic)
+// 8. Save Tasks
 async function saveTasks() {
-    // Save Title First
-    const newTitle = document.getElementById('schedule-title').value;
-    await supabase.from('schedules').update({ title: newTitle }).eq('id', currentScheduleId);
-    document.getElementById('display-title').innerText = newTitle;
+    // Delete old tasks first
+    await supabase.from('tasks').delete().eq('schedule_id', selectedScheduleId);
 
-    // Delete old tasks for this schedule (Easiest way for simple CRUD)
-    await supabase.from('tasks').delete().eq('schedule_id', currentScheduleId);
-
-    // Insert new tasks
+    // Get new values
     const rows = document.querySelectorAll('.task-row');
-    const tasksToInsert = [];
-    rows.forEach(row => {
-        tasksToInsert.push({
-            schedule_id: currentScheduleId,
-            time_slot: row.querySelector('.time-input').value,
-            activity: row.querySelector('.activity-input').value
+    const inserts = [];
+    rows.forEach(r => {
+        inserts.push({
+            schedule_id: selectedScheduleId,
+            time_slot: r.querySelector('.t-time').value,
+            activity: r.querySelector('.t-act').value
         });
     });
 
-    await supabase.from('tasks').insert(tasksToInsert);
-    alert('Schedule Saved!');
-    loadSidebar(); // Refresh sidebar title
+    if(inserts.length > 0) {
+        await supabase.from('tasks').insert(inserts);
+    }
+    alert("Saved!");
 }
 
-// 7. Download as Image
+// 9. Download
 document.getElementById('downloadBtn').addEventListener('click', () => {
-    const captureArea = document.getElementById('capture-area');
-    html2canvas(captureArea).then(canvas => {
-        const link = document.createElement('a');
-        link.download = 'TimeIsGold-Schedule.png';
-        link.href = canvas.toDataURL();
-        link.click();
+    html2canvas(document.getElementById('capture-area')).then(c => {
+        const a = document.createElement('a');
+        a.download = 'Schedule.png';
+        a.href = c.toDataURL();
+        a.click();
     });
 });
 
-// Logout
-document.getElementById('logoutBtn').addEventListener('click', async () => {
+async function logout() {
     await supabase.auth.signOut();
     window.location.href = 'index.html';
-});
-
-// Init
-checkUser();
+}
