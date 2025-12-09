@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Time is Gold</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Custom tweaks */
+        .sidebar { height: 100vh; overflow-y: auto; background: #212529; color: white; }
+        .schedule-card { cursor: pointer; transition: 0.2s; }
+        .schedule-card:hover { background: #343a40; }
+        @media (max-width: 768px) { .sidebar { height: auto; padding-bottom: 20px; } }
+    </style>
+</head>
+<body class="bg-light">
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- SIDEBAR -->
+            <nav class="col-md-3 col-lg-2 d-md-block sidebar p-3">
+                <h4 class="text-warning">Time is Gold</h4>
+                <hr>
+                <p class="small text-secondary">CREATE NEW</p>
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-warning btn-sm" onclick="createSchedule('Everyday')">+ Everyday</button>
+                    <button class="btn btn-outline-warning btn-sm" onclick="createSchedule('Today')">+ Today</button>
+                    <button class="btn btn-outline-warning btn-sm" onclick="createSchedule('Tomorrow')">+ Tomorrow</button>
+                </div>
+                
+                <hr>
+                <p class="small text-secondary">MY SCHEDULES</p>
+                <div id="schedule-list">
+                    <!-- Javascript will load lists here -->
+                </div>
+                
+                <hr>
+                <button id="logoutBtn" class="btn btn-danger btn-sm w-100 mt-5">Logout</button>
+            </nav>
+
+            <!-- MAIN CONTENT -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+                
+                <!-- Editor Section (Initially Hidden until a schedule is clicked) -->
+                <div id="editor-section" class="d-none">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <input type="text" id="schedule-title" class="form-control form-control-lg w-50 fw-bold" value="Locked-in 1">
+                        <div>
+                            <button class="btn btn-primary me-2" onclick="saveTasks()">💾 Save</button>
+                            <button class="btn btn-success" id="downloadBtn">📷 Download Image</button>
+                        </div>
+                    </div>
+
+                    <!-- The Schedule Container to be Captured -->
+                    <div id="capture-area" class="bg-white p-4 shadow rounded border">
+                        <h3 class="text-center text-uppercase mb-4 fw-bold text-warning bg-dark p-2" id="display-title">Locked-in 1</h3>
+                        
+                        <div id="task-list">
+                            <!-- Tasks rows go here -->
+                        </div>
+                        
+                        <button class="btn btn-light w-100 mt-3 border border-dashed" onclick="addTaskRow()">+ Add Activity</button>
+                    </div>
+                    
+                    <button class="btn btn-danger mt-4" onclick="deleteSchedule()">Delete This Schedule</button>
+                </div>
+
+                <div id="empty-state" class="text-center mt-5">
+                    <h3>Select or Create a schedule from the sidebar.</h3>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
