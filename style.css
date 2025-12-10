@@ -1,15 +1,18 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Poppins:wght@300;400;600;700&display=swap');
 
 :root {
-    --primary-color: #8e44ad; /* Purple shade like the reference */
-    --primary-hover: #732d91;
-    --bg-color: #f3f4f6;
+    --gold: #d4af37;       /* Metallic Gold */
+    --gold-hover: #b59024;
+    --black: #000000;
+    --dark-gray: #121212;  /* Card Background */
+    --input-bg: #222222;
+    --text-main: #ffffff;
+    --text-muted: #aaaaaa;
 }
 
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: #e0e7ff; /* Soft purple-blue background */
-    background-image: linear-gradient(135deg, #e0e7ff 0%, #f3e5f5 100%);
+    background-color: var(--black);
     height: 100vh;
     display: flex;
     align-items: center;
@@ -20,13 +23,14 @@ body {
 
 /* The Main Card */
 .login-container {
-    background: #fff;
+    background: var(--dark-gray);
+    border: 1px solid #333; /* Subtle border */
     border-radius: 20px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.8); /* Deep shadow */
     overflow: hidden;
     width: 90%;
     max-width: 1000px;
-    height: 80vh; /* Full screen feel but contained */
+    height: 85vh;
     display: flex;
     animation: fadeInUp 0.8s ease-out;
 }
@@ -39,12 +43,23 @@ body {
     flex-direction: column;
     justify-content: center;
     position: relative;
+    color: var(--text-main);
+}
+
+/* Brand Title */
+.brand-title {
+    font-family: 'Cinzel', serif; /* The "Good Font" */
+    color: var(--gold);
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 10px;
+    text-shadow: 0 2px 10px rgba(212, 175, 55, 0.2);
 }
 
 /* Right Side (Image) */
 .image-side {
     width: 50%;
-    background-color: #eee;
+    background-color: #000;
     position: relative;
     overflow: hidden;
 }
@@ -52,65 +67,90 @@ body {
 .image-side img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Ensures image covers area without stretching */
+    object-fit: cover;
+    opacity: 0.8; /* Slightly dim image to match dark theme */
     animation: scaleIn 10s infinite alternate;
 }
 
 /* Typography & Inputs */
 h2 {
-    font-weight: 700;
-    color: #333;
-    margin-bottom: 10px;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 5px;
+    font-size: 1.5rem;
 }
 
 .text-muted {
-    color: #888 !important;
+    color: var(--text-muted) !important;
     font-size: 0.9rem;
 }
 
+label {
+    color: var(--gold); /* Gold Labels */
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
 .form-control {
-    background: #f9f9f9;
-    border: 1px solid #eee;
+    background: var(--input-bg);
+    border: 1px solid #333;
+    color: white;
     padding: 15px;
-    border-radius: 10px;
+    border-radius: 8px;
     margin-bottom: 20px;
-    font-size: 0.95rem;
     transition: all 0.3s;
 }
 
 .form-control:focus {
-    background: #fff;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 4px rgba(142, 68, 173, 0.1);
+    background: #2a2a2a;
+    border-color: var(--gold);
+    color: white;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
+}
+
+/* Placeholder color fix */
+.form-control::placeholder {
+    color: #666;
 }
 
 /* Buttons */
 .btn-primary {
-    background: var(--primary-color);
+    background: linear-gradient(45deg, var(--gold), #f1c40f);
+    color: #000; /* Black text on Gold button for contrast */
     border: none;
     padding: 12px;
-    border-radius: 10px;
-    font-weight: 600;
+    border-radius: 8px;
+    font-weight: 700;
     width: 100%;
-    transition: transform 0.2s;
+    letter-spacing: 1px;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .btn-primary:hover {
-    background: var(--primary-hover);
+    background: var(--gold-hover);
+    color: #000;
     transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
 }
 
 .toggle-text {
-    margin-top: 20px;
+    margin-top: 25px;
     text-align: center;
     font-size: 0.9rem;
+    color: var(--text-muted);
 }
 
 .toggle-text a {
-    color: var(--primary-color);
+    color: var(--gold);
     text-decoration: none;
     font-weight: 600;
     cursor: pointer;
+    transition: color 0.3s;
+}
+
+.toggle-text a:hover {
+    color: #fff;
+    text-decoration: underline;
 }
 
 /* Animations */
@@ -128,104 +168,31 @@ h2 {
 @media (max-width: 768px) {
     .login-container {
         flex-direction: column;
-        height: auto;
-        min-height: 80vh;
-    }
-    .image-side {
-        display: none; /* Hide image on mobile to focus on form */
-    }
-    .form-side {
+        height: 100vh;
         width: 100%;
-        padding: 30px;
+        border-radius: 0;
+        border: none;
     }
+    .image-side { display: none; }
+    .form-side { width: 100%; padding: 30px; }
+    .brand-title { font-size: 2rem; }
 }
-/* --- DASHBOARD STYLES --- */
 
-/* Sidebar Styling */
+/* --- DASHBOARD STYLES (KEEPING THESE BUT UPDATING COLORS) --- */
 .sidebar {
-    background: linear-gradient(180deg, #2c3e50 0%, #000000 100%); /* Dark aesthetic */
-    color: white;
-    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-    height: 100vh;
-    overflow-y: auto;
-    z-index: 100;
+    background: #000;
+    border-right: 1px solid #333;
 }
-
-.sidebar-title {
-    font-weight: 700;
-    letter-spacing: 1px;
-    color: #ffc107; /* Gold color */
-    text-transform: uppercase;
-    margin-bottom: 30px;
-    margin-top: 20px;
-}
-
-/* Schedule List Items */
-.schedule-item {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-    margin-bottom: 10px;
-    padding: 15px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border-left: 4px solid transparent;
-}
-
-.schedule-item:hover {
-    background: rgba(255, 255, 255, 0.15);
-    transform: translateX(5px);
-    border-left: 4px solid #ffc107;
-}
-
-/* Main Content Area */
-main {
-    background-color: #f3f4f6; /* Clean gray background */
-    min-height: 100vh;
-}
-
-/* Glassmorphism Card for Editor */
-#capture-area {
-    background: #ffffff;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-    border: none;
-    position: relative;
-    overflow: hidden;
-}
-
-/* Header inside the Schedule Card */
+.sidebar-title { color: var(--gold); }
 #display-title {
-    background: linear-gradient(135deg, #8e44ad 0%, #3498db 100%);
-    color: white;
-    padding: 20px;
-    border-radius: 15px;
-    font-weight: 700;
-    box-shadow: 0 5px 15px rgba(142, 68, 173, 0.3);
+    background: var(--gold);
+    color: black;
+    box-shadow: 0 5px 15px rgba(212, 175, 55, 0.2);
 }
-
-/* Task Rows */
-.task-row input {
-    border: none;
-    border-bottom: 2px solid #eee;
-    background: transparent;
-    border-radius: 0;
-    padding: 10px;
-}
-
-.task-row input:focus {
-    background: #f9f9f9;
-    border-bottom: 2px solid #8e44ad;
-    box-shadow: none;
-}
-
-/* Buttons */
 .btn-warning {
-    background-color: #ffc107;
-    border: none;
-    color: #000;
+    background-color: var(--gold);
+    font-weight: bold;
 }
-
-.btn-warning:hover {
-    background-color: #ffca2c;
-    transform: translateY(-2px);
+.schedule-item:hover {
+    border-left: 4px solid var(--gold);
 }
