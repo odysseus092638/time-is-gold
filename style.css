@@ -277,3 +277,80 @@ main.expanded {
         padding: 20px; /* Less padding on mobile paper */
     }
 }
+/* --- VISUAL FIXES --- */
+
+/* 1. Fix Pomodoro Buttons (Play, Pause, Reset) */
+/* Balik sa Gold Circle, Transparent Background */
+.btn-timer-control {
+    background: transparent !important;
+    border: 2px solid var(--gold) !important;
+    color: var(--gold) !important;
+    border-radius: 50% !important; /* Bilog dapat */
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: none !important;
+}
+
+.btn-timer-control:hover {
+    background: var(--gold) !important;
+    color: black !important;
+    transform: scale(1.1);
+}
+
+/* 2. Fix Rename Button (The Ugly One) */
+/* Alisin ang background at border box */
+.btn-icon-only {
+    background: transparent !important;
+    border: none !important;
+    color: var(--gold) !important; /* Gold pen icon */
+    font-size: 1.2rem;
+    padding: 5px;
+    box-shadow: none !important;
+    margin-left: 10px;
+}
+
+.btn-icon-only:hover {
+    color: white !important;
+    transform: scale(1.1);
+}
+
+/* 3. Fix Invisible "Save Image" Button */
+/* Gawing Gold ang border at icon para kita agad */
+.btn-download {
+    background: transparent !important;
+    border: 1px solid var(--gold) !important;
+    color: var(--gold) !important;
+    opacity: 1 !important; /* Siguraduhin hindi transparent */
+}
+
+.btn-download:hover {
+    background: var(--gold) !important;
+    color: black !important;
+}
+
+/* 4. Fix Invisible "Add New Activity" Button */
+/* Lagyan ng dashed border at kulay para kita */
+.btn-add-task {
+    color: var(--text-muted) !important;
+    border: 1px dashed #555 !important; /* Dark gray border */
+    background: rgba(255, 255, 255, 0.05) !important; /* Very slight background */
+    margin-top: 30px;
+    opacity: 1 !important;
+}
+
+.btn-add-task:hover {
+    border-color: var(--gold) !important;
+    color: var(--gold) !important;
+    background: rgba(212, 175, 55, 0.1) !important;
+}
+
+/* 5. Rename Modal & Input Fixes (Just in case) */
+/* Mas malinis na input field sa rename prompt */
+.swal2-input, .custom-prompt-input {
+    background: #222 !important;
+    color: white !important;
+    border: 1px solid #444 !important;
+}
