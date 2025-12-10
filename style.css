@@ -6,9 +6,10 @@
     --black: #050505;
     --dark-surface: #121212; 
     --light-surface: #1e1e1e;
-    --text-main: #ffffff;      /* Pure White */
-    --text-muted: #cccccc;     /* Light Gray (Much brighter now) */
+    --text-main: #ffffff;
+    --text-muted: #cccccc;
     --border-color: #333;
+    --sidebar-width: 280px; /* Fixed width for better calculation */
 }
 
 body {
@@ -19,18 +20,10 @@ body {
     overflow-x: hidden;
 }
 
-/* --- GLOBAL TEXT VISIBILITY FIXES --- */
-/* Force Bootstrap text classes to be readable on black */
-.text-muted { color: var(--text-muted) !important; }
-.text-secondary { color: var(--text-muted) !important; }
-.text-dark { color: var(--text-main) !important; }
-h1, h2, h3, h4, h5, h6 { color: var(--text-main) !important; }
-
-/* Input Placeholders (Make them visible) */
-::placeholder {
-    color: #888 !important;
-    opacity: 1;
-}
+/* --- TEXT HELPERS --- */
+.text-muted, .text-secondary { color: var(--text-muted) !important; }
+.text-dark, h1, h2, h3, h4, h5, h6 { color: var(--text-main) !important; }
+::placeholder { color: #888 !important; opacity: 1; }
 
 /* --- LOGIN PAGE STYLES --- */
 .login-container {
@@ -59,7 +52,6 @@ h1, h2, h3, h4, h5, h6 { color: var(--text-main) !important; }
     font-size: 2.5rem;
     text-align: center;
     margin-bottom: 20px;
-    letter-spacing: 2px;
 }
 
 .image-side {
@@ -77,13 +69,11 @@ h1, h2, h3, h4, h5, h6 { color: var(--text-main) !important; }
     filter: grayscale(20%);
 }
 
-/* Inputs & Forms */
 .form-control {
     background: var(--light-surface);
     border: 1px solid var(--border-color);
-    color: var(--text-main); /* White text when typing */
+    color: var(--text-main);
     padding: 12px;
-    border-radius: 4px;
 }
 
 .form-control:focus {
@@ -93,51 +83,37 @@ h1, h2, h3, h4, h5, h6 { color: var(--text-main) !important; }
     box-shadow: none;
 }
 
-/* Label Colors */
-label {
-    color: var(--gold);
-    font-size: 0.8rem;
-    font-weight: 600;
-    letter-spacing: 1px;
-}
-
 .btn-primary {
     background: var(--gold);
-    color: black !important; /* Force black text on gold button */
+    color: black !important;
     font-weight: 700;
     border: none;
-    border-radius: 4px;
     padding: 12px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
 }
 
-.btn-primary:hover {
-    background: var(--gold-hover);
-    color: black !important;
-}
+.btn-primary:hover { background: var(--gold-hover); color: black !important; }
 
-/* Toggle Link */
-#toggle-link {
-    color: var(--gold);
-    cursor: pointer;
-    text-decoration: underline;
-}
+#toggle-link { color: var(--gold); cursor: pointer; text-decoration: underline; }
 
 /* --- DASHBOARD STYLES --- */
 
-/* Sidebar */
+/* Sidebar Structure (Fixed & Transition) */
 .sidebar {
     background: var(--dark-surface);
     border-right: 1px solid var(--border-color);
-    /* Ito ang magic para maging steady */
-    position: fixed; 
+    position: fixed;
     top: 0;
     bottom: 0;
     left: 0;
-    z-index: 100;
-    overflow-y: auto; /* Sidebar mismo ang mag-iiscroll pag madaming menu */
-    height: 100vh;
+    width: var(--sidebar-width);
+    z-index: 1000;
+    overflow-y: auto;
+    transition: all 0.3s ease-in-out; /* Smooth slide animation */
+}
+
+/* Class to hide sidebar on desktop */
+.sidebar.collapsed {
+    transform: translateX(-100%);
 }
 
 .sidebar-brand {
@@ -150,297 +126,154 @@ label {
     margin-bottom: 20px;
 }
 
-/* Sidebar Buttons */
+/* Main Content Structure */
+main {
+    background-color: var(--black);
+    min-height: 100vh;
+    margin-left: var(--sidebar-width); /* Push content to right */
+    width: calc(100% - var(--sidebar-width));
+    transition: all 0.3s ease-in-out; /* Smooth slide animation */
+    padding: 2rem;
+}
+
+/* Class to expand main content when sidebar is hidden */
+main.expanded {
+    margin-left: 0;
+    width: 100%;
+}
+
+/* Collapse Toggle Button (Desktop Only) */
+.btn-toggle-sidebar {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    padding: 5px 10px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    display: none; /* Hidden on mobile default */
+}
+
+@media (min-width: 768px) {
+    .btn-toggle-sidebar { display: inline-block; }
+}
+
+.btn-toggle-sidebar:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+}
+
+/* --- COMPONENTS --- */
 .btn-new-schedule {
     background: transparent;
     border: 1px solid var(--gold);
     color: var(--gold) !important;
     padding: 10px;
-    border-radius: 4px;
-    transition: all 0.3s;
-    text-transform: uppercase;
-    font-size: 0.85rem;
-    letter-spacing: 1px;
+    width: 100%;
 }
-
-.btn-new-schedule:hover {
-    background: var(--gold);
-    color: black !important;
-}
+.btn-new-schedule:hover { background: var(--gold); color: black !important; }
 
 .schedule-item {
     padding: 15px;
     border-bottom: 1px solid var(--border-color);
     cursor: pointer;
-    transition: 0.2s;
     border-left: 3px solid transparent;
 }
-
 .schedule-item:hover, .schedule-item.active {
     background: var(--light-surface);
     border-left: 3px solid var(--gold);
 }
 
-.schedule-item strong {
-    color: var(--text-main);
-    font-size: 1rem;
-}
-
-.schedule-item small {
-    color: var(--text-muted) !important;
-}
-
-/* Main Area */
-main {
-    background-color: var(--black);
-    min-height: 100vh;
-}
-
-/* Empty State Fix */
-#empty-state i {
-    color: var(--gold);
-    opacity: 0.5;
-}
-#empty-state h3 {
-    color: var(--text-main) !important;
-    margin-top: 20px;
-}
-#empty-state p {
-    color: var(--text-muted) !important;
-}
-
-/* The Paper / Capture Area */
 #capture-area {
     background: var(--dark-surface);
     border: 1px solid var(--border-color);
     border-radius: 4px;
     padding: 40px;
-    box-shadow: 0 0 30px rgba(0,0,0,0.5);
 }
 
 #display-title {
     font-family: 'Cinzel', serif;
     color: var(--gold) !important;
     text-align: center;
-    text-transform: uppercase;
-    margin-bottom: 30px;
     border-bottom: 2px solid var(--border-color);
     padding-bottom: 15px;
 }
 
-/* Task Inputs */
+/* Task & Inputs */
 .task-row input {
     background: transparent;
     border: none;
     border-bottom: 1px solid #333;
     color: var(--text-main);
-    border-radius: 0;
-    padding: 10px 0;
 }
-
-.task-row input:focus {
-    background: transparent;
-    border-bottom: 1px solid var(--gold);
-    box-shadow: none;
-    color: white;
-}
-
-/* Buttons in Dashboard */
-.btn-save {
-    background: var(--gold);
-    color: black !important;
-    border: none;
-    font-weight: 600;
-}
-
-.btn-save:hover { background: var(--gold-hover); }
-
-.btn-download {
-    background: transparent;
-    border: 1px solid var(--text-muted);
-    color: var(--text-muted) !important;
-}
-
-.btn-download:hover {
-    border-color: var(--gold);
-    color: var(--gold) !important;
-}
-
-.btn-add-task {
-    color: var(--text-muted) !important;
-    border: 1px dashed var(--border-color);
-    background: transparent;
-}
-
-.btn-add-task:hover {
-    border-color: var(--gold);
-    color: var(--gold) !important;
-}
-
-/* Modals */
-.modal-content {
-    background: var(--dark-surface);
-    border: 1px solid var(--border-color);
-    color: var(--text-main);
-}
-
-.modal-header { border-bottom: 1px solid var(--border-color); }
-.modal-title { color: var(--gold) !important; }
-.btn-close { filter: invert(1); }
-
-/* Mobile Adjustment */
-@media (max-width: 767px) {
-    .sidebar {
-        position: static; /* Sa mobile, normal flow lang */
-        height: auto;
-        border-right: none;
-        border-bottom: 1px solid var(--border-color);
-    }
-    main {
-        margin-left: 0;
-        width: 100%;
-    }
-}
-/* Styling for the Time Picker Input */
-input[type="time"] {
-    color-scheme: dark; /* Force dark calendar/clock icon */
-    cursor: pointer;
-}
-
-/* Red Logout Button */
-.btn-logout {
-    color: #ff4d4d !important; /* Bright Red */
-    border: 1px solid #ff4d4d !important;
-    background: transparent;
-    transition: all 0.3s;
-}
-
-.btn-logout:hover {
-    background: #ff4d4d;
-    color: white !important;
-    box-shadow: 0 0 10px rgba(255, 77, 77, 0.5);
-}
-/* Food Plan Textarea */
+.task-row input:focus { border-bottom: 1px solid var(--gold); outline: none; }
 .food-plan-box {
     background: transparent;
     border: 1px solid #333;
     color: var(--text-main);
-    border-radius: 4px;
     width: 100%;
     padding: 15px;
-    resize: none; /* Bawal i-resize */
-    font-family: 'Poppins', sans-serif;
-    font-size: 0.9rem;
-    transition: 0.3s;
+    resize: none;
 }
+.food-plan-box:focus { background: #1a1a1a; border-color: var(--gold); outline: none; }
 
-.food-plan-box:focus {
-    background: #1a1a1a;
-    border-color: var(--gold);
-    outline: none;
-}
+/* Buttons */
+.btn-save { background: var(--gold); color: black !important; border: none; font-weight: 600; }
+.btn-logout { color: #ff4d4d !important; border: 1px solid #ff4d4d !important; background: transparent; }
+.btn-logout:hover { background: #ff4d4d; color: white !important; }
+.btn-destroy { background: #3a0000; color: #ff4d4d; border: 1px solid #ff4d4d; font-weight: bold; }
+.btn-destroy:hover { background: #ff4d4d; color: white; }
 
-/* Action Buttons in Header */
-.btn-icon-only {
-    background: transparent;
-    border: none;
-    color: var(--text-muted);
-    font-size: 1.1rem;
-    transition: 0.2s;
-}
+/* Timer & Profile */
+.timer-display { font-family: 'Cinzel', serif; font-size: 4rem; color: var(--gold); }
+.profile-avatar { width: 80px; height: 80px; background: var(--gold); color: black; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 20px auto; }
 
-.btn-icon-only:hover {
-    color: var(--gold);
-    transform: scale(1.1);
-}
+/* Modals */
+.modal-content { background: var(--dark-surface); border: 1px solid var(--border-color); color: var(--text-main); }
+.modal-header { border-bottom: 1px solid var(--border-color); }
+.btn-close { filter: invert(1); }
 
-/* "Make Everyday" Button */
-.btn-convert {
-    font-size: 0.8rem;
-    letter-spacing: 0.5px;
-    color: var(--text-muted);
-    border: 1px dashed var(--border-color);
-    background: transparent;
-    padding: 8px 15px;
-    border-radius: 20px;
-}
+/* --- MOBILE RESPONSIVENESS (THE FIX) --- */
+@media (max-width: 767px) {
+    /* LOGIN PAGE FIX */
+    .login-container {
+        flex-direction: column;
+        height: auto;
+        min-height: 80vh;
+        margin-top: 20px;
+    }
+    .image-side {
+        display: none !important; /* Hide image completely on mobile */
+    }
+    .form-side {
+        width: 100%;
+        padding: 20px;
+    }
+    .brand-title {
+        font-size: 2rem;
+    }
 
-.btn-convert:hover {
-    border-color: var(--gold);
-    color: var(--gold);
-    background: rgba(212, 175, 55, 0.05);
-}
-/* --- POMODORO TIMER STYLES --- */
-.timer-display {
-    font-family: 'Cinzel', serif; /* Consistent font */
-    font-size: 4rem;
-    color: var(--gold);
-    text-align: center;
-    margin: 20px 0;
-    text-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
-}
-
-.timer-explanation {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    text-align: center;
-    background: rgba(255, 255, 255, 0.05);
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    border-left: 3px solid var(--gold);
-}
-
-.btn-timer-control {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    border: 2px solid var(--gold);
-    background: transparent;
-    color: var(--gold);
-    font-size: 1.2rem;
-    transition: 0.2s;
-}
-
-.btn-timer-control:hover {
-    background: var(--gold);
-    color: black;
-    transform: scale(1.1);
-}
-
-/* --- PROFILE STYLES --- */
-.profile-avatar {
-    width: 80px;
-    height: 80px;
-    background: var(--gold);
-    color: black;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-    font-weight: bold;
-    margin: 0 auto 20px auto;
-}
-/* --- DESTROY BUTTON STYLE --- */
-.btn-destroy {
-    background: #3a0000;
-    color: #ff4d4d;
-    border: 1px solid #ff4d4d;
-    font-weight: bold;
-    letter-spacing: 1px;
-    transition: 0.3s;
-}
-
-.btn-destroy:hover {
-    background: #ff4d4d;
-    color: white;
-    box-shadow: 0 0 15px rgba(255, 77, 77, 0.6);
-}
-/* Desktop Adjustment (Dahil naka-fixed na ang sidebar, need itulak ang main content) */
-@media (min-width: 768px) {
+    /* DASHBOARD FIX */
+    .sidebar {
+        position: static; /* No longer fixed on mobile */
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+        /* Ensure it shows/hides via Bootstrap collapse */
+    }
+    
     main {
-        margin-left: 25%; /* Matches col-md-3/col-lg-3 width approx */
-        width: 75%;
+        margin-left: 0;
+        width: 100%;
+        padding: 1rem;
+    }
+
+    /* Hide desktop toggle on mobile */
+    .btn-toggle-sidebar {
+        display: none;
+    }
+    
+    #capture-area {
+        padding: 20px; /* Less padding on mobile paper */
     }
 }

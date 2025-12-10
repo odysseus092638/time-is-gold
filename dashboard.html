@@ -51,8 +51,15 @@
                 </div>
             </nav>
 
-            <!-- MAIN CONTENT -->
-            <main class="col-md-9 ms-sm-auto col-lg-9 px-md-5 py-5">
+           <!-- MAIN CONTENT -->
+            <main class="col-md-9 ms-sm-auto col-lg-9 px-md-5 py-5" id="main-content">
+                
+                <!-- NEW: DESKTOP COLLAPSE BUTTON -->
+                <button class="btn btn-toggle-sidebar" onclick="toggleSidebar()" title="Toggle Sidebar">
+                    <i class="fa-solid fa-bars-staggered"></i>
+                </button>
+
+                <!-- EXISTING: MOBILE MENU BUTTON -->
                 <button class="btn btn-dark d-md-none mb-3 border border-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
                     <i class="fa-solid fa-bars"></i>
                 </button>

@@ -329,3 +329,12 @@ async function destroyAccount() {
         alert("Action cancelled. You must type 'DELETE' exactly.");
     }
 }
+// --- DESKTOP SIDEBAR TOGGLE ---
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebarMenu');
+    const main = document.getElementById('main-content');
+    
+    // Toggle Classes
+    sidebar.classList.toggle('collapsed');
+    main.classList.toggle('expanded');
+}
