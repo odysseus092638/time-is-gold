@@ -139,3 +139,93 @@ h2 {
         padding: 30px;
     }
 }
+/* --- DASHBOARD STYLES --- */
+
+/* Sidebar Styling */
+.sidebar {
+    background: linear-gradient(180deg, #2c3e50 0%, #000000 100%); /* Dark aesthetic */
+    color: white;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    height: 100vh;
+    overflow-y: auto;
+    z-index: 100;
+}
+
+.sidebar-title {
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #ffc107; /* Gold color */
+    text-transform: uppercase;
+    margin-bottom: 30px;
+    margin-top: 20px;
+}
+
+/* Schedule List Items */
+.schedule-item {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    margin-bottom: 10px;
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-left: 4px solid transparent;
+}
+
+.schedule-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateX(5px);
+    border-left: 4px solid #ffc107;
+}
+
+/* Main Content Area */
+main {
+    background-color: #f3f4f6; /* Clean gray background */
+    min-height: 100vh;
+}
+
+/* Glassmorphism Card for Editor */
+#capture-area {
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    border: none;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Header inside the Schedule Card */
+#display-title {
+    background: linear-gradient(135deg, #8e44ad 0%, #3498db 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 15px;
+    font-weight: 700;
+    box-shadow: 0 5px 15px rgba(142, 68, 173, 0.3);
+}
+
+/* Task Rows */
+.task-row input {
+    border: none;
+    border-bottom: 2px solid #eee;
+    background: transparent;
+    border-radius: 0;
+    padding: 10px;
+}
+
+.task-row input:focus {
+    background: #f9f9f9;
+    border-bottom: 2px solid #8e44ad;
+    box-shadow: none;
+}
+
+/* Buttons */
+.btn-warning {
+    background-color: #ffc107;
+    border: none;
+    color: #000;
+}
+
+.btn-warning:hover {
+    background-color: #ffca2c;
+    transform: translateY(-2px);
+}
