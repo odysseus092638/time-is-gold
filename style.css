@@ -4,10 +4,10 @@
     --gold: #d4af37;
     --gold-hover: #b59024;
     --black: #050505;
-    --dark-surface: #121212; /* Sidebar/Cards */
-    --light-surface: #1e1e1e; /* Content Areas */
-    --text-main: #e0e0e0;
-    --text-muted: #a0a0a0;
+    --dark-surface: #121212; 
+    --light-surface: #1e1e1e;
+    --text-main: #ffffff;      /* Pure White */
+    --text-muted: #cccccc;     /* Light Gray (Much brighter now) */
     --border-color: #333;
 }
 
@@ -16,20 +16,32 @@ body {
     background-color: var(--black);
     color: var(--text-main);
     margin: 0;
-    overflow-x: hidden; /* Prevent horizontal scroll */
+    overflow-x: hidden;
 }
 
-/* --- LOGIN PAGE STYLES (Retained) --- */
+/* --- GLOBAL TEXT VISIBILITY FIXES --- */
+/* Force Bootstrap text classes to be readable on black */
+.text-muted { color: var(--text-muted) !important; }
+.text-secondary { color: var(--text-muted) !important; }
+.text-dark { color: var(--text-main) !important; }
+h1, h2, h3, h4, h5, h6 { color: var(--text-main) !important; }
+
+/* Input Placeholders (Make them visible) */
+::placeholder {
+    color: #888 !important;
+    opacity: 1;
+}
+
+/* --- LOGIN PAGE STYLES --- */
 .login-container {
     background: var(--dark-surface);
     border: 1px solid var(--border-color);
-    border-radius: 0; /* Sharper corners for pro look */
     box-shadow: 0 0 40px rgba(0,0,0,0.8);
     width: 90%;
     max-width: 1000px;
     height: 85vh;
     display: flex;
-    margin: 4% auto; /* Center vertical */
+    margin: 4% auto;
 }
 
 .form-side {
@@ -43,7 +55,7 @@ body {
 
 .brand-title {
     font-family: 'Cinzel', serif;
-    color: var(--gold);
+    color: var(--gold) !important;
     font-size: 2.5rem;
     text-align: center;
     margin-bottom: 20px;
@@ -62,16 +74,16 @@ body {
     height: 100%;
     object-fit: cover;
     opacity: 0.7;
-    filter: grayscale(20%); /* Artistic touch */
+    filter: grayscale(20%);
 }
 
 /* Inputs & Forms */
 .form-control {
     background: var(--light-surface);
     border: 1px solid var(--border-color);
-    color: var(--text-main);
+    color: var(--text-main); /* White text when typing */
     padding: 12px;
-    border-radius: 4px; /* Professional radius */
+    border-radius: 4px;
 }
 
 .form-control:focus {
@@ -81,9 +93,17 @@ body {
     box-shadow: none;
 }
 
+/* Label Colors */
+label {
+    color: var(--gold);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
 .btn-primary {
     background: var(--gold);
-    color: black;
+    color: black !important; /* Force black text on gold button */
     font-weight: 700;
     border: none;
     border-radius: 4px;
@@ -94,10 +114,17 @@ body {
 
 .btn-primary:hover {
     background: var(--gold-hover);
-    color: black;
+    color: black !important;
 }
 
-/* --- DASHBOARD STYLES (Overhauled) --- */
+/* Toggle Link */
+#toggle-link {
+    color: var(--gold);
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+/* --- DASHBOARD STYLES --- */
 
 /* Sidebar */
 .sidebar {
@@ -108,7 +135,7 @@ body {
 
 .sidebar-brand {
     font-family: 'Cinzel', serif;
-    color: var(--gold);
+    color: var(--gold) !important;
     font-size: 1.5rem;
     text-align: center;
     padding: 20px 0;
@@ -116,11 +143,11 @@ body {
     margin-bottom: 20px;
 }
 
-/* Sidebar Buttons/Links */
+/* Sidebar Buttons */
 .btn-new-schedule {
     background: transparent;
     border: 1px solid var(--gold);
-    color: var(--gold);
+    color: var(--gold) !important;
     padding: 10px;
     border-radius: 4px;
     transition: all 0.3s;
@@ -131,7 +158,7 @@ body {
 
 .btn-new-schedule:hover {
     background: var(--gold);
-    color: black;
+    color: black !important;
 }
 
 .schedule-item {
@@ -153,12 +180,25 @@ body {
 }
 
 .schedule-item small {
-    color: var(--text-muted);
+    color: var(--text-muted) !important;
 }
 
 /* Main Area */
 main {
     background-color: var(--black);
+}
+
+/* Empty State Fix */
+#empty-state i {
+    color: var(--gold);
+    opacity: 0.5;
+}
+#empty-state h3 {
+    color: var(--text-main) !important;
+    margin-top: 20px;
+}
+#empty-state p {
+    color: var(--text-muted) !important;
 }
 
 /* The Paper / Capture Area */
@@ -172,7 +212,7 @@ main {
 
 #display-title {
     font-family: 'Cinzel', serif;
-    color: var(--gold);
+    color: var(--gold) !important;
     text-align: center;
     text-transform: uppercase;
     margin-bottom: 30px;
@@ -180,7 +220,7 @@ main {
     padding-bottom: 15px;
 }
 
-/* Task Inputs (The Lines) */
+/* Task Inputs */
 .task-row input {
     background: transparent;
     border: none;
@@ -200,7 +240,7 @@ main {
 /* Buttons in Dashboard */
 .btn-save {
     background: var(--gold);
-    color: black;
+    color: black !important;
     border: none;
     font-weight: 600;
 }
@@ -210,39 +250,35 @@ main {
 .btn-download {
     background: transparent;
     border: 1px solid var(--text-muted);
-    color: var(--text-muted);
+    color: var(--text-muted) !important;
 }
 
 .btn-download:hover {
     border-color: var(--gold);
-    color: var(--gold);
+    color: var(--gold) !important;
 }
 
 .btn-add-task {
-    color: var(--text-muted);
+    color: var(--text-muted) !important;
     border: 1px dashed var(--border-color);
     background: transparent;
 }
 
 .btn-add-task:hover {
     border-color: var(--gold);
-    color: var(--gold);
+    color: var(--gold) !important;
 }
 
-/* Modals (Dark Mode) */
+/* Modals */
 .modal-content {
     background: var(--dark-surface);
     border: 1px solid var(--border-color);
     color: var(--text-main);
 }
 
-.modal-header {
-    border-bottom: 1px solid var(--border-color);
-}
-
-.btn-close {
-    filter: invert(1); /* Make the X white */
-}
+.modal-header { border-bottom: 1px solid var(--border-color); }
+.modal-title { color: var(--gold) !important; }
+.btn-close { filter: invert(1); }
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
