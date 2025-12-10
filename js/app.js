@@ -21,13 +21,16 @@ document.addEventListener('DOMContentLoaded', () => {
     checkUser();
 });
 
+// Palitan yung lumang checkUser function nito:
 async function checkUser() {
-    // Change 'supabase' to 'sb'
-    const { data: { user } } = await sb.auth.getUser();
-    if (!user) {
-        // If not logged in, redirect to login page
-        window.location.href = 'index.html';
+    // Check local session first (Mas mabilis, iwas flicker)
+    const { data: { session } } = await sb.auth.getSession();
+    
+    if (!session) {
+        // Kung walang session, redirect sa login
+        window.location.href = 'index.html'; 
     } else {
+        // Kung may session, load the app
         loadSidebar();
     }
 }

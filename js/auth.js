@@ -156,3 +156,15 @@ async function logout() {
     await sb.auth.signOut();
     window.location.href = 'index.html';
 }
+// Ilagay ito sa pinaka-baba ng js/auth.js
+
+async function checkLoginStatus() {
+    const { data: { session } } = await sb.auth.getSession();
+    // Kung may user na naka-login, diretso na sa dashboard. Wag na pakita login screen.
+    if (session) {
+        window.location.href = 'dashboard.html';
+    }
+}
+
+// Patakbuhin agad pagka-load ng page
+window.onload = checkLoginStatus;
