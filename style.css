@@ -293,3 +293,22 @@ main {
     .form-side { width: 100%; }
     .sidebar { height: auto; border-right: none; border-bottom: 1px solid var(--border-color); }
 }
+/* Styling for the Time Picker Input */
+input[type="time"] {
+    color-scheme: dark; /* Force dark calendar/clock icon */
+    cursor: pointer;
+}
+
+/* Red Logout Button */
+.btn-logout {
+    color: #ff4d4d !important; /* Bright Red */
+    border: 1px solid #ff4d4d !important;
+    background: transparent;
+    transition: all 0.3s;
+}
+
+.btn-logout:hover {
+    background: #ff4d4d;
+    color: white !important;
+    box-shadow: 0 0 10px rgba(255, 77, 77, 0.5);
+}
