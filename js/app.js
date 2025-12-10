@@ -1,73 +1,80 @@
+// js/app.js - STRICT CHECK
+
 // ILAGAY MO DITO YUNG TOTOONG KEYS MO GALING SUPABASE
 const supabaseUrl = 'https://bkimpnxonrdmxprpokqw.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJraW1wbnhvbnJkbXhwcnBva3F3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUyOTY3NDAsImV4cCI6MjA4MDg3Mjc0MH0.5thPd54zYNiHNEsyGa317wThumsnxu7znpZafPQIsqg';
 
-// FIX: Change variable name to 'sb'
 const sb = supabase.createClient(supabaseUrl, supabaseKey);
 
 let selectedScheduleId = null;
 let selectedScheduleTitle = "";
 let addModal, optionsModal;
 
-// Initialize
 document.addEventListener('DOMContentLoaded', () => {
-    // Check if element exists before creating modal to prevent errors
+    // Setup Modals
     const addModalEl = document.getElementById('addModal');
     const optModalEl = document.getElementById('optionsModal');
-    
     if (addModalEl) addModal = new bootstrap.Modal(addModalEl);
     if (optModalEl) optionsModal = new bootstrap.Modal(optModalEl);
     
+    // RUN SECURITY CHECK IMMEDIATELY
     checkUser();
 });
 
-// Palitan yung lumang checkUser function nito:
 async function checkUser() {
-    // Check local session first (Mas mabilis, iwas flicker)
+    // 1. Get Session from Local Storage (Fastest)
     const { data: { session } } = await sb.auth.getSession();
-    
+
     if (!session) {
-        // Kung walang session, redirect sa login
-        window.location.href = 'index.html'; 
+        // WALANG USER -> SIPAIN PABALIK SA LOGIN
+        window.location.href = 'index.html';
     } else {
-        // Kung may session, load the app
+        // MAY USER -> LOAD DATA
         loadSidebar();
     }
 }
 
 async function createSchedule(type) {
+    // Re-check user before action
     const { data: { user } } = await sb.auth.getUser();
+    if(!user) return; // Stop if no user
     
-    const dateStr = new Date().toLocaleDateString();
-    const defaultTitle = `${type} (${dateStr})`;
+    const dateStr = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const defaultTitle = `${type} - ${dateStr}`;
 
     const { error } = await sb
         .from('schedules')
         .insert([{ title: defaultTitle, category: type, user_id: user.id }]);
 
-    if (error) alert("Error creating: " + error.message);
-    
-    addModal.hide(); 
-    loadSidebar();   
+    if (error) alert(error.message);
+    else {
+        addModal.hide(); 
+        loadSidebar();   
+    }
 }
 
 async function loadSidebar() {
-    const { data: { user } } = await sb.auth.getUser();
+    const { data: { session } } = await sb.auth.getSession();
+    if(!session) return; // Safety check
+
     const { data } = await sb
         .from('schedules')
         .select('*')
-        .eq('user_id', user.id)
+        .eq('user_id', session.user.id)
         .order('created_at', { ascending: false });
 
     const list = document.getElementById('schedule-list');
     list.innerHTML = '';
 
-    if(data.length === 0) list.innerHTML = '<p class="text-center text-muted mt-3">No schedules yet.</p>';
+    if(!data || data.length === 0) {
+        list.innerHTML = '<p class="text-center text-muted mt-3 small">No schedules found.</p>';
+        return;
+    }
 
     data.forEach(sched => {
         const div = document.createElement('div');
         div.className = 'schedule-item';
-        div.innerHTML = `<strong>${sched.title}</strong><br><small class="text-muted">${sched.category}</small>`;
+        div.innerHTML = `<strong>${sched.title}</strong><br><small>${sched.category}</small>`;
         div.onclick = () => showOptions(sched.id, sched.title);
         list.appendChild(div);
     });
@@ -96,7 +103,7 @@ async function enterEditMode() {
 }
 
 async function renameSchedulePrompt() {
-    const newName = prompt("Enter new name:", selectedScheduleTitle);
+    const newName = prompt("Rename Schedule:", selectedScheduleTitle);
     if (newName && newName.trim() !== "") {
         await sb.from('schedules').update({ title: newName }).eq('id', selectedScheduleId);
         selectedScheduleTitle = newName;
@@ -106,7 +113,7 @@ async function renameSchedulePrompt() {
 }
 
 async function deleteSchedule() {
-    if(confirm("Are you sure you want to delete this?")) {
+    if(confirm("Permanently delete this schedule?")) {
         await sb.from('schedules').delete().eq('id', selectedScheduleId);
         optionsModal.hide();
         document.getElementById('editor-area').classList.add('d-none');
@@ -117,11 +124,11 @@ async function deleteSchedule() {
 
 function addTaskRow(time = '', act = '') {
     const div = document.createElement('div');
-    div.className = 'row mb-2 task-row';
+    div.className = 'row mb-3 task-row'; 
     div.innerHTML = `
-        <div class="col-3"><input type="text" class="form-control t-time" value="${time}" placeholder="Time"></div>
-        <div class="col-8"><input type="text" class="form-control t-act" value="${act}" placeholder="Activity"></div>
-        <div class="col-1"><button class="btn btn-close mt-2" onclick="this.parentElement.parentElement.remove()"></button></div>
+        <div class="col-3"><input type="text" class="form-control t-time" value="${time}" placeholder="00:00"></div>
+        <div class="col-8"><input type="text" class="form-control t-act" value="${act}" placeholder="Activity Details"></div>
+        <div class="col-1 text-end"><button class="btn btn-sm text-danger mt-2" onclick="this.parentElement.parentElement.remove()"><i class="fa-solid fa-xmark"></i></button></div>
     `;
     document.getElementById('task-list').appendChild(div);
 }
@@ -142,13 +149,18 @@ async function saveTasks() {
     if(inserts.length > 0) {
         await sb.from('tasks').insert(inserts);
     }
-    alert("Saved!");
+    const btn = document.querySelector('.btn-save');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fa-solid fa-check"></i> Saved';
+    setTimeout(() => { btn.innerHTML = originalText; }, 2000);
 }
 
 document.getElementById('downloadBtn').addEventListener('click', () => {
-    html2canvas(document.getElementById('capture-area')).then(c => {
+    html2canvas(document.getElementById('capture-area'), {
+        backgroundColor: "#121212" 
+    }).then(c => {
         const a = document.createElement('a');
-        a.download = 'Schedule.png';
+        a.download = 'TimeIsGold_Schedule.png';
         a.href = c.toDataURL();
         a.click();
     });
