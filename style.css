@@ -312,3 +312,53 @@ input[type="time"] {
     color: white !important;
     box-shadow: 0 0 10px rgba(255, 77, 77, 0.5);
 }
+/* Food Plan Textarea */
+.food-plan-box {
+    background: transparent;
+    border: 1px solid #333;
+    color: var(--text-main);
+    border-radius: 4px;
+    width: 100%;
+    padding: 15px;
+    resize: none; /* Bawal i-resize */
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem;
+    transition: 0.3s;
+}
+
+.food-plan-box:focus {
+    background: #1a1a1a;
+    border-color: var(--gold);
+    outline: none;
+}
+
+/* Action Buttons in Header */
+.btn-icon-only {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    transition: 0.2s;
+}
+
+.btn-icon-only:hover {
+    color: var(--gold);
+    transform: scale(1.1);
+}
+
+/* "Make Everyday" Button */
+.btn-convert {
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    border: 1px dashed var(--border-color);
+    background: transparent;
+    padding: 8px 15px;
+    border-radius: 20px;
+}
+
+.btn-convert:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(212, 175, 55, 0.05);
+}

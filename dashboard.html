@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard | Time is Gold</title>
-    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -14,36 +13,25 @@
 
     <div class="container-fluid">
         <div class="row">
-            <!-- SIDEBAR (Expanded width to col-lg-3) -->
+            <!-- SIDEBAR -->
             <nav class="col-md-3 col-lg-3 d-md-block sidebar p-4 collapse show" id="sidebarMenu">
-                <div class="sidebar-brand">
-                    Time is Gold
-                </div>
-                
-                <!-- NEW BUTTON -->
+                <div class="sidebar-brand">Time is Gold</div>
                 <button class="btn btn-new-schedule w-100 mb-4" data-bs-toggle="modal" data-bs-target="#addModal">
                     <i class="fa-solid fa-plus"></i> &nbsp; New Schedule
                 </button>
-                
-                <p class="small text-muted text-uppercase fw-bold mb-3 ms-1" style="font-size: 0.7rem; letter-spacing: 1px;">My Lists</p>
+                <p class="small text-muted text-uppercase fw-bold mb-3 ms-1" style="font-size: 0.7rem;">My Lists</p>
                 <div id="schedule-list">
-                    <!-- Javascript loads lists here -->
-                    <div class="text-center mt-5">
-                        <small class="text-muted">Loading...</small>
-                    </div>
+                    <div class="text-center mt-5"><small class="text-muted">Loading...</small></div>
                 </div>
-
                 <div class="mt-5 pt-5 border-top border-secondary">
-    <button onclick="logout()" class="btn btn-sm btn-logout w-100 text-start ps-3 py-2">
-        <i class="fa-solid fa-arrow-right-from-bracket"></i> &nbsp; Log Out
-    </button>
-</div>
+                    <button onclick="logout()" class="btn btn-sm btn-logout w-100 text-start ps-3 py-2">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i> &nbsp; Log Out
+                    </button>
+                </div>
             </nav>
 
             <!-- MAIN CONTENT -->
             <main class="col-md-9 ms-sm-auto col-lg-9 px-md-5 py-5">
-                
-                <!-- Mobile Toggle -->
                 <button class="btn btn-dark d-md-none mb-3 border border-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
                     <i class="fa-solid fa-bars"></i>
                 </button>
@@ -51,24 +39,40 @@
                 <!-- EDITOR AREA -->
                 <div id="editor-area" class="d-none">
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <div>
-                            <small class="text-muted text-uppercase" style="letter-spacing: 2px;">Editing Mode</small>
-                            <h2 id="current-title" class="fw-bold text-white mt-1">Schedule Title</h2>
+                        <div class="d-flex align-items-center gap-3">
+                            <h2 id="current-title" class="fw-bold text-white mt-1 m-0">Title</h2>
+                            <!-- RENAME BUTTON MOVED HERE -->
+                            <button class="btn-icon-only" onclick="renameSchedulePrompt()" title="Rename">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
                         </div>
                         <div class="btn-group">
-                            <button class="btn btn-save shadow-sm px-4" onclick="saveTasks()">
-                                <i class="fa-solid fa-floppy-disk"></i> &nbsp; SAVE
-                            </button>
-                            <button class="btn btn-download shadow-sm px-3" id="downloadBtn">
-                                <i class="fa-solid fa-image"></i>
-                            </button>
+                            <button class="btn btn-save shadow-sm px-4" onclick="saveTasks()"><i class="fa-solid fa-floppy-disk"></i> &nbsp; SAVE</button>
+                            <button class="btn btn-download shadow-sm px-3" id="downloadBtn"><i class="fa-solid fa-image"></i></button>
                         </div>
+                    </div>
+
+                    <!-- "MAKE EVERYDAY" BUTTON CONTAINER -->
+                    <div id="convert-area" class="mb-3 d-none">
+                        <button class="btn btn-convert w-100" onclick="convertToEveryday()">
+                            <i class="fa-solid fa-repeat"></i> &nbsp; Make this an <b>Everyday Routine</b>? (It won't expire)
+                        </button>
                     </div>
 
                     <!-- CAPTURE AREA -->
                     <div id="capture-area">
                         <h3 id="display-title">Title</h3>
                         
+                        <!-- NEW FOOD PLAN SECTION -->
+                        <div class="mb-4 mt-4">
+                            <label class="text-muted small text-uppercase mb-2" style="letter-spacing: 1px; color: var(--gold) !important;">
+                                <i class="fa-solid fa-utensils"></i> &nbsp; Food Plan
+                            </label>
+                            <textarea id="food-plan-input" class="food-plan-box" rows="3" placeholder="Breakfast: ... &#10;Lunch: ... &#10;Dinner: ..."></textarea>
+                        </div>
+
+                        <div class="border-top border-secondary my-4"></div>
+
                         <div id="task-list" class="mt-4">
                             <!-- Tasks appear here -->
                         </div>
@@ -107,7 +111,7 @@
         </div>
     </div>
 
-    <!-- MODAL 2: OPTIONS -->
+    <!-- MODAL 2: OPTIONS (REMOVED RENAME, ONLY DELETE & EDIT LEFT) -->
     <div class="modal fade" id="optionsModal" tabindex="-1">
         <div class="modal-dialog modal-sm modal-dialog-centered">
             <div class="modal-content">
@@ -117,10 +121,7 @@
                 </div>
                 <div class="modal-body d-grid gap-2 p-3">
                     <button class="btn btn-outline-light border-0 text-start" onclick="enterEditMode()">
-                        <i class="fa-solid fa-pen-to-square text-warning"></i> &nbsp; Edit
-                    </button>
-                    <button class="btn btn-outline-light border-0 text-start" onclick="renameSchedulePrompt()">
-                        <i class="fa-solid fa-i-cursor"></i> &nbsp; Rename
+                        <i class="fa-solid fa-pen-to-square text-warning"></i> &nbsp; Open / Edit
                     </button>
                     <hr class="border-secondary my-1">
                     <button class="btn btn-outline-light border-0 text-start text-danger" onclick="deleteSchedule()">
