@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard | Time is Gold</title>
     <!-- Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
@@ -14,72 +14,75 @@
 
     <div class="container-fluid">
         <div class="row">
-            <!-- SIDEBAR -->
-            <nav class="col-md-3 col-lg-2 d-md-block sidebar p-3 collapse show" id="sidebarMenu">
-                <div class="text-center">
-                    <h5 class="sidebar-title"><i class="fa-solid fa-hourglass-half"></i> Time is Gold</h5>
+            <!-- SIDEBAR (Expanded width to col-lg-3) -->
+            <nav class="col-md-3 col-lg-3 d-md-block sidebar p-4 collapse show" id="sidebarMenu">
+                <div class="sidebar-brand">
+                    Time is Gold
                 </div>
                 
-                <!-- ADD BUTTON -->
-                <button class="btn btn-warning w-100 fw-bold mb-4 shadow-sm py-2" data-bs-toggle="modal" data-bs-target="#addModal">
-                    <i class="fa-solid fa-plus circle"></i> New Schedule
+                <!-- NEW BUTTON -->
+                <button class="btn btn-new-schedule w-100 mb-4" data-bs-toggle="modal" data-bs-target="#addModal">
+                    <i class="fa-solid fa-plus"></i> &nbsp; New Schedule
                 </button>
                 
-                <p class="small text-secondary text-uppercase fw-bold mb-2 ms-1">My Lists</p>
+                <p class="small text-muted text-uppercase fw-bold mb-3 ms-1" style="font-size: 0.7rem; letter-spacing: 1px;">My Lists</p>
                 <div id="schedule-list">
-                    <!-- Javascript will load lists here -->
+                    <!-- Javascript loads lists here -->
                     <div class="text-center mt-5">
-                        <div class="spinner-border text-warning text-center" role="status"></div>
+                        <small class="text-muted">Loading...</small>
                     </div>
                 </div>
 
-                <div class="mt-auto pt-5">
-                    <button onclick="logout()" class="btn btn-outline-light btn-sm w-100 opacity-75">
-                        <i class="fa-solid fa-sign-out-alt"></i> Logout
+                <div class="mt-5 pt-5 border-top border-secondary">
+                    <button onclick="logout()" class="btn btn-sm text-muted w-100 text-start ps-0">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i> &nbsp; Log Out
                     </button>
                 </div>
             </nav>
 
             <!-- MAIN CONTENT -->
-            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+            <main class="col-md-9 ms-sm-auto col-lg-9 px-md-5 py-5">
                 
-                <!-- Mobile Toggle Button (Visible only on phone) -->
-                <button class="btn btn-dark d-md-none mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
-                    <i class="fa-solid fa-bars"></i> Menu
+                <!-- Mobile Toggle -->
+                <button class="btn btn-dark d-md-none mb-3 border border-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
+                    <i class="fa-solid fa-bars"></i>
                 </button>
 
                 <!-- EDITOR AREA -->
-                <div id="editor-area" class="d-none animate-fade-in">
+                <div id="editor-area" class="d-none">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <div>
-                            <small class="text-muted text-uppercase">Editing Mode</small>
-                            <h2 id="current-title" class="fw-bold text-dark">Schedule Title</h2>
+                            <small class="text-muted text-uppercase" style="letter-spacing: 2px;">Editing Mode</small>
+                            <h2 id="current-title" class="fw-bold text-white mt-1">Schedule Title</h2>
                         </div>
                         <div class="btn-group">
-                            <button class="btn btn-primary shadow-sm" onclick="saveTasks()"><i class="fa-solid fa-save"></i> Save</button>
-                            <button class="btn btn-success shadow-sm" id="downloadBtn"><i class="fa-solid fa-camera"></i> Save Image</button>
+                            <button class="btn btn-save shadow-sm px-4" onclick="saveTasks()">
+                                <i class="fa-solid fa-floppy-disk"></i> &nbsp; SAVE
+                            </button>
+                            <button class="btn btn-download shadow-sm px-3" id="downloadBtn">
+                                <i class="fa-solid fa-image"></i>
+                            </button>
                         </div>
                     </div>
 
-                    <!-- CAPTURE AREA (The Paper) -->
-                    <div id="capture-area" class="p-5">
-                        <h3 class="text-center mb-4" id="display-title">Title</h3>
+                    <!-- CAPTURE AREA -->
+                    <div id="capture-area">
+                        <h3 id="display-title">Title</h3>
                         
                         <div id="task-list" class="mt-4">
                             <!-- Tasks appear here -->
                         </div>
                         
-                        <button class="btn btn-light w-100 mt-4 py-3 border border-dashed text-secondary" onclick="addTaskRow()">
-                            <i class="fa-solid fa-plus"></i> Add Activity
+                        <button class="btn btn-add-task w-100 mt-5 py-3" onclick="addTaskRow()">
+                            <i class="fa-solid fa-plus"></i> &nbsp; Add New Activity
                         </button>
                     </div>
                 </div>
 
                 <!-- EMPTY STATE -->
                 <div id="empty-state" class="text-center mt-5 pt-5">
-                    <i class="fa-regular fa-calendar-check fa-5x text-secondary mb-3 opacity-25"></i>
-                    <h3 class="text-secondary fw-bold">No Schedule Selected</h3>
-                    <p class="text-muted">Select a schedule from the sidebar or create a new one to get started.</p>
+                    <i class="fa-solid fa-layer-group fa-4x text-muted mb-4 opacity-25"></i>
+                    <h3 class="text-muted fw-light">Select a schedule to begin</h3>
                 </div>
             </main>
         </div>
@@ -88,17 +91,16 @@
     <!-- MODAL 1: ADD NEW -->
     <div class="modal fade" id="addModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow">
-                <div class="modal-header border-0">
-                    <h5 class="modal-title fw-bold">Create New Schedule</h5>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold">Create Schedule</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body text-center pb-4">
-                    <p class="text-muted mb-4">What kind of plan are you making?</p>
-                    <div class="d-grid gap-2">
-                        <button class="btn btn-outline-primary py-2" onclick="createSchedule('Everyday')">📅 Everyday Routine</button>
-                        <button class="btn btn-outline-primary py-2" onclick="createSchedule('Today')">☀️ Today's Plan</button>
-                        <button class="btn btn-outline-primary py-2" onclick="createSchedule('Tomorrow')">🚀 Tomorrow's Plan</button>
+                <div class="modal-body text-center p-4">
+                    <div class="d-grid gap-3">
+                        <button class="btn btn-outline-secondary text-white py-3 border-secondary" onclick="createSchedule('Everyday')">Everyday Routine</button>
+                        <button class="btn btn-outline-secondary text-white py-3 border-secondary" onclick="createSchedule('Today')">Today's Plan</button>
+                        <button class="btn btn-outline-secondary text-white py-3 border-secondary" onclick="createSchedule('Tomorrow')">Tomorrow's Plan</button>
                     </div>
                 </div>
             </div>
@@ -108,21 +110,27 @@
     <!-- MODAL 2: OPTIONS -->
     <div class="modal fade" id="optionsModal" tabindex="-1">
         <div class="modal-dialog modal-sm modal-dialog-centered">
-            <div class="modal-content border-0 shadow">
-                <div class="modal-header border-0 bg-light">
-                    <h5 class="modal-title fw-bold" id="options-title">Options</h5>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="options-title">Manage</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body d-grid gap-2 p-3">
-                    <button class="btn btn-success" onclick="enterEditMode()"><i class="fa-solid fa-pen"></i> Edit Tasks</button>
-                    <button class="btn btn-secondary" onclick="renameSchedulePrompt()"><i class="fa-solid fa-i-cursor"></i> Rename</button>
-                    <button class="btn btn-danger" onclick="deleteSchedule()"><i class="fa-solid fa-trash"></i> Delete</button>
+                    <button class="btn btn-outline-light border-0 text-start" onclick="enterEditMode()">
+                        <i class="fa-solid fa-pen-to-square text-warning"></i> &nbsp; Edit
+                    </button>
+                    <button class="btn btn-outline-light border-0 text-start" onclick="renameSchedulePrompt()">
+                        <i class="fa-solid fa-i-cursor"></i> &nbsp; Rename
+                    </button>
+                    <hr class="border-secondary my-1">
+                    <button class="btn btn-outline-light border-0 text-start text-danger" onclick="deleteSchedule()">
+                        <i class="fa-solid fa-trash"></i> &nbsp; Delete
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- SCRIPTS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>

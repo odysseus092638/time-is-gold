@@ -1,41 +1,37 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Poppins:wght@300;400;600;700&display=swap');
 
 :root {
-    --gold: #d4af37;       /* Metallic Gold */
+    --gold: #d4af37;
     --gold-hover: #b59024;
-    --black: #000000;
-    --dark-gray: #121212;  /* Card Background */
-    --input-bg: #222222;
-    --text-main: #ffffff;
-    --text-muted: #aaaaaa;
+    --black: #050505;
+    --dark-surface: #121212; /* Sidebar/Cards */
+    --light-surface: #1e1e1e; /* Content Areas */
+    --text-main: #e0e0e0;
+    --text-muted: #a0a0a0;
+    --border-color: #333;
 }
 
 body {
     font-family: 'Poppins', sans-serif;
     background-color: var(--black);
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
+    color: var(--text-main);
     margin: 0;
+    overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
-/* The Main Card */
+/* --- LOGIN PAGE STYLES (Retained) --- */
 .login-container {
-    background: var(--dark-gray);
-    border: 1px solid #333; /* Subtle border */
-    border-radius: 20px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.8); /* Deep shadow */
-    overflow: hidden;
+    background: var(--dark-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 0; /* Sharper corners for pro look */
+    box-shadow: 0 0 40px rgba(0,0,0,0.8);
     width: 90%;
     max-width: 1000px;
     height: 85vh;
     display: flex;
-    animation: fadeInUp 0.8s ease-out;
+    margin: 4% auto; /* Center vertical */
 }
 
-/* Left Side (Form) */
 .form-side {
     padding: 50px;
     width: 50%;
@@ -43,23 +39,20 @@ body {
     flex-direction: column;
     justify-content: center;
     position: relative;
-    color: var(--text-main);
 }
 
-/* Brand Title */
 .brand-title {
-    font-family: 'Cinzel', serif; /* The "Good Font" */
+    font-family: 'Cinzel', serif;
     color: var(--gold);
     font-size: 2.5rem;
     text-align: center;
-    margin-bottom: 10px;
-    text-shadow: 0 2px 10px rgba(212, 175, 55, 0.2);
+    margin-bottom: 20px;
+    letter-spacing: 2px;
 }
 
-/* Right Side (Image) */
 .image-side {
     width: 50%;
-    background-color: #000;
+    background: black;
     position: relative;
     overflow: hidden;
 }
@@ -68,131 +61,199 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    opacity: 0.8; /* Slightly dim image to match dark theme */
-    animation: scaleIn 10s infinite alternate;
+    opacity: 0.7;
+    filter: grayscale(20%); /* Artistic touch */
 }
 
-/* Typography & Inputs */
-h2 {
-    font-weight: 600;
-    color: var(--text-main);
-    margin-bottom: 5px;
-    font-size: 1.5rem;
-}
-
-.text-muted {
-    color: var(--text-muted) !important;
-    font-size: 0.9rem;
-}
-
-label {
-    color: var(--gold); /* Gold Labels */
-    margin-bottom: 5px;
-    font-weight: 500;
-}
-
+/* Inputs & Forms */
 .form-control {
-    background: var(--input-bg);
-    border: 1px solid #333;
-    color: white;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    transition: all 0.3s;
+    background: var(--light-surface);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    padding: 12px;
+    border-radius: 4px; /* Professional radius */
 }
 
 .form-control:focus {
-    background: #2a2a2a;
+    background: #252525;
     border-color: var(--gold);
     color: white;
-    box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
+    box-shadow: none;
 }
 
-/* Placeholder color fix */
-.form-control::placeholder {
-    color: #666;
-}
-
-/* Buttons */
 .btn-primary {
-    background: linear-gradient(45deg, var(--gold), #f1c40f);
-    color: #000; /* Black text on Gold button for contrast */
-    border: none;
-    padding: 12px;
-    border-radius: 8px;
+    background: var(--gold);
+    color: black;
     font-weight: 700;
-    width: 100%;
+    border: none;
+    border-radius: 4px;
+    padding: 12px;
+    text-transform: uppercase;
     letter-spacing: 1px;
-    transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .btn-primary:hover {
     background: var(--gold-hover);
-    color: #000;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+    color: black;
 }
 
-.toggle-text {
-    margin-top: 25px;
+/* --- DASHBOARD STYLES (Overhauled) --- */
+
+/* Sidebar */
+.sidebar {
+    background: var(--dark-surface);
+    border-right: 1px solid var(--border-color);
+    min-height: 100vh;
+}
+
+.sidebar-brand {
+    font-family: 'Cinzel', serif;
+    color: var(--gold);
+    font-size: 1.5rem;
     text-align: center;
-    font-size: 0.9rem;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 20px;
+}
+
+/* Sidebar Buttons/Links */
+.btn-new-schedule {
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    padding: 10px;
+    border-radius: 4px;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+}
+
+.btn-new-schedule:hover {
+    background: var(--gold);
+    color: black;
+}
+
+.schedule-item {
+    padding: 15px;
+    border-bottom: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: 0.2s;
+    border-left: 3px solid transparent;
+}
+
+.schedule-item:hover, .schedule-item.active {
+    background: var(--light-surface);
+    border-left: 3px solid var(--gold);
+}
+
+.schedule-item strong {
+    color: var(--text-main);
+    font-size: 1rem;
+}
+
+.schedule-item small {
     color: var(--text-muted);
 }
 
-.toggle-text a {
+/* Main Area */
+main {
+    background-color: var(--black);
+}
+
+/* The Paper / Capture Area */
+#capture-area {
+    background: var(--dark-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 40px;
+    box-shadow: 0 0 30px rgba(0,0,0,0.5);
+}
+
+#display-title {
+    font-family: 'Cinzel', serif;
     color: var(--gold);
-    text-decoration: none;
+    text-align: center;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 15px;
+}
+
+/* Task Inputs (The Lines) */
+.task-row input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #333;
+    color: var(--text-main);
+    border-radius: 0;
+    padding: 10px 0;
+}
+
+.task-row input:focus {
+    background: transparent;
+    border-bottom: 1px solid var(--gold);
+    box-shadow: none;
+    color: white;
+}
+
+/* Buttons in Dashboard */
+.btn-save {
+    background: var(--gold);
+    color: black;
+    border: none;
     font-weight: 600;
-    cursor: pointer;
-    transition: color 0.3s;
 }
 
-.toggle-text a:hover {
-    color: #fff;
-    text-decoration: underline;
+.btn-save:hover { background: var(--gold-hover); }
+
+.btn-download {
+    background: transparent;
+    border: 1px solid var(--text-muted);
+    color: var(--text-muted);
 }
 
-/* Animations */
-@keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
+.btn-download:hover {
+    border-color: var(--gold);
+    color: var(--gold);
 }
 
-@keyframes scaleIn {
-    from { transform: scale(1); }
-    to { transform: scale(1.1); }
+.btn-add-task {
+    color: var(--text-muted);
+    border: 1px dashed var(--border-color);
+    background: transparent;
 }
 
-/* Mobile Responsiveness */
+.btn-add-task:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+}
+
+/* Modals (Dark Mode) */
+.modal-content {
+    background: var(--dark-surface);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+}
+
+.modal-header {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.btn-close {
+    filter: invert(1); /* Make the X white */
+}
+
+/* Mobile Responsive */
 @media (max-width: 768px) {
     .login-container {
         flex-direction: column;
         height: 100vh;
         width: 100%;
-        border-radius: 0;
         border: none;
+        margin: 0;
     }
     .image-side { display: none; }
-    .form-side { width: 100%; padding: 30px; }
-    .brand-title { font-size: 2rem; }
-}
-
-/* --- DASHBOARD STYLES (KEEPING THESE BUT UPDATING COLORS) --- */
-.sidebar {
-    background: #000;
-    border-right: 1px solid #333;
-}
-.sidebar-title { color: var(--gold); }
-#display-title {
-    background: var(--gold);
-    color: black;
-    box-shadow: 0 5px 15px rgba(212, 175, 55, 0.2);
-}
-.btn-warning {
-    background-color: var(--gold);
-    font-weight: bold;
-}
-.schedule-item:hover {
-    border-left: 4px solid var(--gold);
+    .form-side { width: 100%; }
+    .sidebar { height: auto; border-right: none; border-bottom: 1px solid var(--border-color); }
 }
