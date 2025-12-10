@@ -6,21 +6,27 @@ const sb = supabase.createClient(supabaseUrl, supabaseKey);
 
 let selectedScheduleId = null;
 let selectedScheduleTitle = "";
-let selectedCategory = ""; // Need this for conversion logic
-let addModal, optionsModal;
+let selectedCategory = "";
+let addModal, optionsModal, profileModal;
+let timerInterval;
+let timeLeft = 25 * 60; // 25 minutes in seconds
 
 document.addEventListener('DOMContentLoaded', () => {
-    const addModalEl = document.getElementById('addModal');
-    const optModalEl = document.getElementById('optionsModal');
-    if (addModalEl) addModal = new bootstrap.Modal(addModalEl);
-    if (optModalEl) optionsModal = new bootstrap.Modal(optModalEl);
+    // Init Modals
+    addModal = new bootstrap.Modal(document.getElementById('addModal'));
+    optionsModal = new bootstrap.Modal(document.getElementById('optionsModal'));
+    profileModal = new bootstrap.Modal(document.getElementById('profileModal'));
+    
     checkUser();
 });
 
 async function checkUser() {
     const { data: { session } } = await sb.auth.getSession();
     if (!session) window.location.href = 'index.html';
-    else loadSidebar();
+    else {
+        loadSidebar();
+        loadUserProfile(); // Load name on startup
+    }
 }
 
 function getLocalISODate(dateObj) {
@@ -99,12 +105,11 @@ async function loadSidebar() {
 function showOptions(id, title, category) {
     selectedScheduleId = id;
     selectedScheduleTitle = title;
-    selectedCategory = category; // Save category
+    selectedCategory = category;
     document.getElementById('options-title').innerText = title;
     optionsModal.show();
 }
 
-// --- EDITOR & FOOD PLAN LOGIC ---
 async function enterEditMode() {
     optionsModal.hide(); 
     document.getElementById('empty-state').classList.add('d-none');
@@ -112,50 +117,41 @@ async function enterEditMode() {
     const editor = document.getElementById('editor-area');
     editor.classList.remove('d-none');
     
-    // Auto Scroll on Mobile
     if (window.innerWidth < 768) editor.scrollIntoView({ behavior: 'smooth', block: 'start' });
     
     document.getElementById('current-title').innerText = selectedScheduleTitle;
     document.getElementById('display-title').innerText = selectedScheduleTitle;
 
-    // Show/Hide "Convert to Everyday" button
     const convertArea = document.getElementById('convert-area');
     if (selectedCategory === 'Everyday') convertArea.classList.add('d-none');
     else convertArea.classList.remove('d-none');
 
-    // Load Food Plan & Tasks
-    // We need to fetch the schedule details AGAIN to get the food_plan text
     const { data: schedData } = await sb.from('schedules').select('food_plan').eq('id', selectedScheduleId).single();
     if(schedData) document.getElementById('food-plan-input').value = schedData.food_plan || "";
 
-    // Load Tasks
     const { data } = await sb.from('tasks').select('*').eq('schedule_id', selectedScheduleId).order('id');
     const taskList = document.getElementById('task-list');
     taskList.innerHTML = '';
     if(data) data.forEach(t => addTaskRow(t.time_slot, t.activity));
 }
 
-// --- RENAME (Now inside Editor) ---
 async function renameSchedulePrompt() {
     const newName = prompt("Rename Schedule:", selectedScheduleTitle);
     if (newName && newName.trim() !== "") {
         await sb.from('schedules').update({ title: newName }).eq('id', selectedScheduleId);
         selectedScheduleTitle = newName;
-        // Update UI immediately
         document.getElementById('current-title').innerText = newName;
         document.getElementById('display-title').innerText = newName;
-        loadSidebar(); // Refresh sidebar names
+        loadSidebar(); 
     }
 }
 
-// --- CONVERT TO EVERYDAY LOGIC ---
 async function convertToEveryday() {
     if(confirm("Make this your Everyday Routine? It will no longer expire.")) {
-        // Update DB: Category -> Everyday, Target Date -> NULL
         const { error } = await sb.from('schedules').update({
             category: 'Everyday',
             target_date: null,
-            title: selectedScheduleTitle + " (Everyday)" // Optional rename
+            title: selectedScheduleTitle + " (Everyday)"
         }).eq('id', selectedScheduleId);
 
         if(error) alert("Error: " + error.message);
@@ -163,7 +159,7 @@ async function convertToEveryday() {
             alert("Success! This is now an everyday plan.");
             selectedCategory = 'Everyday';
             selectedScheduleTitle += " (Everyday)";
-            enterEditMode(); // Refresh UI
+            enterEditMode(); 
             loadSidebar();
         }
     }
@@ -191,11 +187,9 @@ function addTaskRow(time = '', act = '') {
 }
 
 async function saveTasks() {
-    // 1. Save Food Plan
     const foodPlanText = document.getElementById('food-plan-input').value;
     await sb.from('schedules').update({ food_plan: foodPlanText }).eq('id', selectedScheduleId);
 
-    // 2. Save Tasks
     await sb.from('tasks').delete().eq('schedule_id', selectedScheduleId);
     const rows = document.querySelectorAll('.task-row');
     const inserts = [];
@@ -227,4 +221,69 @@ document.getElementById('downloadBtn').addEventListener('click', () => {
 async function logout() {
     await sb.auth.signOut();
     window.location.href = 'index.html';
+}
+
+// --- POMODORO LOGIC ---
+function updateTimerDisplay() {
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+    document.getElementById('timer-text').innerText = 
+        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+}
+
+function startTimer() {
+    if(timerInterval) return; // Prevent multiple clicks
+    timerInterval = setInterval(() => {
+        if(timeLeft > 0) {
+            timeLeft--;
+            updateTimerDisplay();
+        } else {
+            clearInterval(timerInterval);
+            alert("Focus Time Finished! Take a break.");
+            resetTimer();
+        }
+    }, 1000);
+}
+
+function pauseTimer() {
+    clearInterval(timerInterval);
+    timerInterval = null;
+}
+
+function resetTimer() {
+    pauseTimer();
+    timeLeft = 25 * 60;
+    updateTimerDisplay();
+}
+
+// --- PROFILE SETTINGS LOGIC ---
+async function loadUserProfile() {
+    const { data: { user } } = await sb.auth.getUser();
+    if(user && user.user_metadata && user.user_metadata.display_name) {
+        const name = user.user_metadata.display_name;
+        document.getElementById('sidebar-username').innerText = name;
+        document.getElementById('avatar-initial').innerText = name.charAt(0).toUpperCase();
+        document.getElementById('profile-name').value = name;
+    }
+}
+
+function openProfile() {
+    profileModal.show();
+}
+
+async function saveProfile() {
+    const newName = document.getElementById('profile-name').value;
+    if(!newName) return;
+
+    const { error } = await sb.auth.updateUser({
+        data: { display_name: newName }
+    });
+
+    if(error) alert("Error: " + error.message);
+    else {
+        alert("Profile Updated!");
+        document.getElementById('sidebar-username').innerText = newName;
+        document.getElementById('avatar-initial').innerText = newName.charAt(0).toUpperCase();
+        profileModal.hide();
+    }
 }

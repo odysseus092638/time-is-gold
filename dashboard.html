@@ -16,17 +16,38 @@
             <!-- SIDEBAR -->
             <nav class="col-md-3 col-lg-3 d-md-block sidebar p-4 collapse show" id="sidebarMenu">
                 <div class="sidebar-brand">Time is Gold</div>
-                <button class="btn btn-new-schedule w-100 mb-4" data-bs-toggle="modal" data-bs-target="#addModal">
+                
+                <!-- GREETING AREA -->
+                <div class="text-center mb-4">
+                    <small class="text-muted text-uppercase" style="font-size: 0.7rem;">Welcome,</small>
+                    <h5 id="sidebar-username" class="fw-bold text-white">User</h5>
+                </div>
+
+                <!-- NEW SCHEDULE BUTTON -->
+                <button class="btn btn-new-schedule w-100 mb-3" data-bs-toggle="modal" data-bs-target="#addModal">
                     <i class="fa-solid fa-plus"></i> &nbsp; New Schedule
                 </button>
+
+                <!-- NEW POMODORO BUTTON -->
+                <button class="btn btn-outline-secondary border-secondary text-white w-100 mb-4" data-bs-toggle="modal" data-bs-target="#pomodoroModal">
+                    <i class="fa-solid fa-clock"></i> &nbsp; Focus Timer
+                </button>
+                
                 <p class="small text-muted text-uppercase fw-bold mb-3 ms-1" style="font-size: 0.7rem;">My Lists</p>
                 <div id="schedule-list">
                     <div class="text-center mt-5"><small class="text-muted">Loading...</small></div>
                 </div>
+
+                <!-- BOTTOM BUTTONS -->
                 <div class="mt-5 pt-5 border-top border-secondary">
-                    <button onclick="logout()" class="btn btn-sm btn-logout w-100 text-start ps-3 py-2">
-                        <i class="fa-solid fa-arrow-right-from-bracket"></i> &nbsp; Log Out
-                    </button>
+                    <div class="d-flex gap-2">
+                        <button onclick="openProfile()" class="btn btn-sm btn-outline-light flex-grow-1">
+                            <i class="fa-solid fa-gear"></i> Settings
+                        </button>
+                        <button onclick="logout()" class="btn btn-sm btn-logout flex-grow-1">
+                            <i class="fa-solid fa-power-off"></i>
+                        </button>
+                    </div>
                 </div>
             </nav>
 
@@ -41,7 +62,6 @@
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <div class="d-flex align-items-center gap-3">
                             <h2 id="current-title" class="fw-bold text-white mt-1 m-0">Title</h2>
-                            <!-- RENAME BUTTON MOVED HERE -->
                             <button class="btn-icon-only" onclick="renameSchedulePrompt()" title="Rename">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </button>
@@ -52,31 +72,22 @@
                         </div>
                     </div>
 
-                    <!-- "MAKE EVERYDAY" BUTTON CONTAINER -->
                     <div id="convert-area" class="mb-3 d-none">
                         <button class="btn btn-convert w-100" onclick="convertToEveryday()">
                             <i class="fa-solid fa-repeat"></i> &nbsp; Make this an <b>Everyday Routine</b>? (It won't expire)
                         </button>
                     </div>
 
-                    <!-- CAPTURE AREA -->
                     <div id="capture-area">
                         <h3 id="display-title">Title</h3>
-                        
-                        <!-- NEW FOOD PLAN SECTION -->
                         <div class="mb-4 mt-4">
                             <label class="text-muted small text-uppercase mb-2" style="letter-spacing: 1px; color: var(--gold) !important;">
                                 <i class="fa-solid fa-utensils"></i> &nbsp; Food Plan
                             </label>
                             <textarea id="food-plan-input" class="food-plan-box" rows="3" placeholder="Breakfast: ... &#10;Lunch: ... &#10;Dinner: ..."></textarea>
                         </div>
-
                         <div class="border-top border-secondary my-4"></div>
-
-                        <div id="task-list" class="mt-4">
-                            <!-- Tasks appear here -->
-                        </div>
-                        
+                        <div id="task-list" class="mt-4"></div>
                         <button class="btn btn-add-task w-100 mt-5 py-3" onclick="addTaskRow()">
                             <i class="fa-solid fa-plus"></i> &nbsp; Add New Activity
                         </button>
@@ -111,7 +122,7 @@
         </div>
     </div>
 
-    <!-- MODAL 2: OPTIONS (REMOVED RENAME, ONLY DELETE & EDIT LEFT) -->
+    <!-- MODAL 2: OPTIONS -->
     <div class="modal fade" id="optionsModal" tabindex="-1">
         <div class="modal-dialog modal-sm modal-dialog-centered">
             <div class="modal-content">
@@ -127,6 +138,49 @@
                     <button class="btn btn-outline-light border-0 text-start text-danger" onclick="deleteSchedule()">
                         <i class="fa-solid fa-trash"></i> &nbsp; Delete
                     </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: POMODORO TIMER -->
+    <div class="modal fade" id="pomodoroModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold"><i class="fa-solid fa-clock"></i> Focus Timer</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center p-4">
+                    <p class="timer-explanation">
+                        The <b>Pomodoro Technique</b> uses a timer to break down work into intervals, traditionally 25 minutes in length, separated by short breaks.
+                    </p>
+                    
+                    <div class="timer-display" id="timer-text">25:00</div>
+                    
+                    <div class="d-flex justify-content-center gap-3 mt-4">
+                        <button class="btn-timer-control" onclick="startTimer()" title="Start"><i class="fa-solid fa-play"></i></button>
+                        <button class="btn-timer-control" onclick="pauseTimer()" title="Pause"><i class="fa-solid fa-pause"></i></button>
+                        <button class="btn-timer-control" onclick="resetTimer()" title="Reset"><i class="fa-solid fa-rotate-right"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 4: USER PROFILE -->
+    <div class="modal fade" id="profileModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold">User Settings</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center p-4">
+                    <div class="profile-avatar" id="avatar-initial">U</div>
+                    <label class="text-muted small text-uppercase mb-2">Display Name</label>
+                    <input type="text" id="profile-name" class="form-control text-center mb-3" placeholder="Enter your name">
+                    <button class="btn btn-save w-100" onclick="saveProfile()">Update Profile</button>
                 </div>
             </div>
         </div>

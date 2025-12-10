@@ -362,3 +362,55 @@ input[type="time"] {
     color: var(--gold);
     background: rgba(212, 175, 55, 0.05);
 }
+/* --- POMODORO TIMER STYLES --- */
+.timer-display {
+    font-family: 'Cinzel', serif; /* Consistent font */
+    font-size: 4rem;
+    color: var(--gold);
+    text-align: center;
+    margin: 20px 0;
+    text-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+}
+
+.timer-explanation {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-align: center;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border-left: 3px solid var(--gold);
+}
+
+.btn-timer-control {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 2px solid var(--gold);
+    background: transparent;
+    color: var(--gold);
+    font-size: 1.2rem;
+    transition: 0.2s;
+}
+
+.btn-timer-control:hover {
+    background: var(--gold);
+    color: black;
+    transform: scale(1.1);
+}
+
+/* --- PROFILE STYLES --- */
+.profile-avatar {
+    width: 80px;
+    height: 80px;
+    background: var(--gold);
+    color: black;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 0 auto 20px auto;
+}
