@@ -256,7 +256,7 @@ function resetTimer() {
     updateTimerDisplay();
 }
 
-// --- PROFILE SETTINGS LOGIC ---
+// --- PROFILE & SETTINGS LOGIC ---
 async function loadUserProfile() {
     const { data: { user } } = await sb.auth.getUser();
     if(user && user.user_metadata && user.user_metadata.display_name) {
@@ -268,22 +268,64 @@ async function loadUserProfile() {
 }
 
 function openProfile() {
+    // Clear password field everytime we open it
+    document.getElementById('profile-password').value = "";
     profileModal.show();
 }
 
 async function saveProfile() {
     const newName = document.getElementById('profile-name').value;
-    if(!newName) return;
+    const newPassword = document.getElementById('profile-password').value;
+    
+    // Object to hold updates
+    const updates = {};
+    if (newName) updates.data = { display_name: newName };
+    if (newPassword && newPassword.trim() !== "") updates.password = newPassword;
 
-    const { error } = await sb.auth.updateUser({
-        data: { display_name: newName }
-    });
+    // Check if empty
+    if (Object.keys(updates).length === 0) {
+        alert("Nothing to update.");
+        return;
+    }
+
+    const { error } = await sb.auth.updateUser(updates);
 
     if(error) alert("Error: " + error.message);
     else {
-        alert("Profile Updated!");
-        document.getElementById('sidebar-username').innerText = newName;
-        document.getElementById('avatar-initial').innerText = newName.charAt(0).toUpperCase();
+        alert("Settings Updated Successfully!");
+        if (newName) {
+            document.getElementById('sidebar-username').innerText = newName;
+            document.getElementById('avatar-initial').innerText = newName.charAt(0).toUpperCase();
+        }
         profileModal.hide();
+    }
+}
+
+async function destroyAccount() {
+    // Double Confirmation (Nakakatakot dapat)
+    const confirmText = prompt("WARNING: This will delete ALL your schedules and tasks permanently.\n\nType 'DELETE' to confirm.");
+    
+    if (confirmText === 'DELETE') {
+        const { data: { user } } = await sb.auth.getUser();
+        
+        // Delete ALL Schedules for this user 
+        // (Tasks are usually deleted automatically via cascading, but logic depends on DB setup. 
+        // Deleting the parent schedule is usually enough).
+        const { error } = await sb.from('schedules').delete().eq('user_id', user.id);
+
+        if (error) {
+            alert("Error destroying data: " + error.message);
+        } else {
+            alert("All data destroyed. Clean slate.");
+            
+            // Clear UI
+            document.getElementById('schedule-list').innerHTML = '<p class="text-center text-muted mt-3 small">No schedules found.</p>';
+            document.getElementById('editor-area').classList.add('d-none');
+            document.getElementById('empty-state').classList.remove('d-none');
+            
+            profileModal.hide();
+        }
+    } else if (confirmText !== null) {
+        alert("Action cancelled. You must type 'DELETE' exactly.");
     }
 }

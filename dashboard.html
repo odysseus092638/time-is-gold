@@ -168,19 +168,38 @@
         </div>
     </div>
 
-    <!-- MODAL 4: USER PROFILE -->
+    <!-- MODAL 4: USER PROFILE & SETTINGS -->
     <div class="modal fade" id="profileModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title fw-bold">User Settings</h5>
+                    <h5 class="modal-title fw-bold">Settings</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body text-center p-4">
+                    <!-- PROFILE SECTION -->
                     <div class="profile-avatar" id="avatar-initial">U</div>
-                    <label class="text-muted small text-uppercase mb-2">Display Name</label>
-                    <input type="text" id="profile-name" class="form-control text-center mb-3" placeholder="Enter your name">
-                    <button class="btn btn-save w-100" onclick="saveProfile()">Update Profile</button>
+                    
+                    <label class="text-muted small text-uppercase mb-1">Display Name</label>
+                    <input type="text" id="profile-name" class="form-control text-center mb-3" placeholder="Enter name">
+                    
+                    <label class="text-muted small text-uppercase mb-1">New Password</label>
+                    <input type="password" id="profile-password" class="form-control text-center mb-3" placeholder="Leave empty to keep current">
+
+                    <button class="btn btn-save w-100 mb-4" onclick="saveProfile()">
+                        <i class="fa-solid fa-floppy-disk"></i> &nbsp; Update Profile
+                    </button>
+
+                    <hr class="border-secondary my-4">
+
+                    <!-- DANGER ZONE -->
+                    <p class="text-danger small fw-bold text-uppercase mb-2">Danger Zone</p>
+                    <button class="btn btn-destroy w-100 py-2" onclick="destroyAccount()">
+                        <i class="fa-solid fa-skull"></i> &nbsp; DESTROY ALL DATA
+                    </button>
+                    <small class="text-muted d-block mt-2" style="font-size: 0.7rem;">
+                        This will delete all your schedules, tasks, and history permanently.
+                    </small>
                 </div>
             </div>
         </div>
