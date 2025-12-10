@@ -23,36 +23,41 @@ async function checkUser() {
     else loadSidebar();
 }
 
-// --- LOGIC 1: CREATION WITH DATES ---
+// HELPER: Get Local YYYY-MM-DD (Para hindi malito sa Timezone)
+function getLocalISODate(dateObj) {
+    const year = dateObj.getFullYear();
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+// --- LOGIC 1: CREATION (FIXED TIMEZONE) ---
 async function createSchedule(type) {
     const { data: { user } } = await sb.auth.getUser();
     if(!user) return;
 
     let finalTitle = "";
-    let targetDate = null; // YYYY-MM-DD format
-    const today = new Date();
+    let targetDate = null; 
+    const today = new Date(); // Local Date
 
     if (type === 'Everyday') {
         finalTitle = "Everyday Routine";
-        targetDate = null; // Walang expiration
+        targetDate = null; 
     } 
     else if (type === 'Today') {
-        // Title: "Today - Dec 10"
         const dateStr = today.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
         finalTitle = `Today - ${dateStr}`;
-        // Target Date: Today (YYYY-MM-DD)
-        targetDate = today.toISOString().split('T')[0];
+        // FIX: Use Local Date Helper
+        targetDate = getLocalISODate(today);
     } 
     else if (type === 'Tomorrow') {
-        // Add 1 Day
         const tomorrow = new Date(today);
-        tomorrow.setDate(tomorrow.getDate() + 1);
+        tomorrow.setDate(tomorrow.getDate() + 1); // Add 1 day
         
-        // Title: "Tomorrow - Dec 11"
         const dateStr = tomorrow.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
         finalTitle = `Tomorrow - ${dateStr}`;
-        // Target Date: Tomorrow (YYYY-MM-DD)
-        targetDate = tomorrow.toISOString().split('T')[0];
+        // FIX: Use Local Date Helper
+        targetDate = getLocalISODate(tomorrow);
     }
 
     const { error } = await sb
@@ -61,27 +66,24 @@ async function createSchedule(type) {
             title: finalTitle, 
             category: type, 
             user_id: user.id,
-            target_date: targetDate // Save expiration date
+            target_date: targetDate 
         }]);
 
-    if (error) alert(error.message);
+    if (error) alert("Error creating schedule: " + error.message);
     else {
         addModal.hide(); 
         loadSidebar();   
     }
 }
 
-// --- LOGIC 2: LOAD & AUTO-DELETE EXPIRED ---
+// --- LOGIC 2: LOAD & AUTO-DELETE (FIXED TIMEZONE) ---
 async function loadSidebar() {
     const { data: { session } } = await sb.auth.getSession();
     if(!session) return;
 
-    // Get current date inside PH/local timezone logic
-    // Trick: create a date, subtracting timezone offset to get local YYYY-MM-DD
-    const now = new Date();
-    const localToday = new Date(now.getTime() - (now.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
+    // FIX: Get "Now" in Local YYYY-MM-DD
+    const localTodayStr = getLocalISODate(new Date());
 
-    // Fetch all schedules
     const { data } = await sb
         .from('schedules')
         .select('*')
@@ -96,16 +98,13 @@ async function loadSidebar() {
         return;
     }
 
-    // Filter & Cleanup Loop
     for (const sched of data) {
-        // LOGIC: If may target_date AT mas luma na sa localToday, BURAHIN.
-        // Everyday (null) is safe. Today (matches today) is safe. Tomorrow (future) is safe.
-        // Old Today (yesterday < today) -> DELETE.
-        
-        if (sched.target_date && sched.target_date < localToday) {
+        // LOGIC: Delete ONLY if target_date exists AND is LESS THAN today
+        // Ex: Target is "2023-12-10". Today is "2023-12-11". 10 < 11 is TRUE. Delete.
+        if (sched.target_date && sched.target_date < localTodayStr) {
             console.log(`Auto-deleting expired schedule: ${sched.title}`);
             await sb.from('schedules').delete().eq('id', sched.id);
-            continue; // Skip rendering this item
+            continue; 
         }
 
         const div = document.createElement('div');
@@ -123,7 +122,6 @@ function showOptions(id, title) {
     optionsModal.show();
 }
 
-// --- LOGIC 3: MOBILE SCROLL & TIME PICKER ---
 async function enterEditMode() {
     optionsModal.hide(); 
     document.getElementById('empty-state').classList.add('d-none');
@@ -131,8 +129,6 @@ async function enterEditMode() {
     const editor = document.getElementById('editor-area');
     editor.classList.remove('d-none');
     
-    // AUTO SCROLL SA MOBILE
-    // Pag maliit ang screen, scroll down papunta sa editor
     if (window.innerWidth < 768) {
         editor.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
@@ -167,13 +163,11 @@ async function deleteSchedule() {
     }
 }
 
-// --- LOGIC 4: TIME PICKER INPUT ---
 function addTaskRow(time = '', act = '') {
     const div = document.createElement('div');
     div.className = 'row mb-3 task-row'; 
     div.innerHTML = `
         <div class="col-4">
-            <!-- CHANGED TO TYPE="TIME" -->
             <input type="time" class="form-control t-time" value="${time}" style="color-scheme: dark;">
         </div>
         <div class="col-7">
@@ -196,7 +190,7 @@ async function saveTasks() {
     rows.forEach(r => {
         inserts.push({
             schedule_id: selectedScheduleId,
-            time_slot: r.querySelector('.t-time').value, // Gets 14:30 format
+            time_slot: r.querySelector('.t-time').value,
             activity: r.querySelector('.t-act').value
         });
     });
