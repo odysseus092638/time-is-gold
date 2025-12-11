@@ -38,15 +38,11 @@
                     <div class="text-center mt-5"><small class="text-muted">Loading...</small></div>
                 </div>
                 <!-- === SPOTIFY EMBED === -->
-<div class="mt-4 mb-3">
-    <p class="small text-muted text-uppercase fw-bold ms-1 mb-2" style="font-size: 0.7rem; letter-spacing: 1px;">
-        <i class="fa-brands fa-spotify"></i> &nbsp; Vibe Station
-    </p>
-    
-    <!-- Wrapper para sa CSS fix -->
-    <div class="spotify-wrapper">
-        <!-- BRYSON TILLER - DON'T -->
-        <!-- Height set to 152 for full player view -->
+<div class="mt-4 mb-3 spotify-wrapper">
+        <p class="small text-muted text-uppercase fw-bold ms-1 mb-2" style="font-size: 0.7rem; letter-spacing: 1px;">
+            <i class="fa-brands fa-spotify"></i> &nbsp; Vibe Station
+        </p>
+        
         <iframe 
             src="https://open.spotify.com/embed/track/3pXF1nA74528Edde4of9CC?utm_source=generator&theme=0" 
             width="100%" 
@@ -54,10 +50,11 @@
             frameBorder="0" 
             allowfullscreen="" 
             allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
-            loading="lazy">
+            loading="lazy"
+            scrolling="no" 
+            style="border:none; overflow:hidden; height:152px;"> <!-- ETO ANG SUSI -->
         </iframe>
     </div>
-</div>
 <!-- === END SPOTIFY === -->
 
 

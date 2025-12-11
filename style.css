@@ -400,25 +400,34 @@ main.expanded {
     color: black !important;
     transform: scale(1.05);
 }
-/* --- SPOTIFY WIDGET FIX --- */
+/* --- SPOTIFY FINAL FIX (No Scrollbar + With Animation) --- */
 .spotify-wrapper {
     width: 100%;
-    overflow: hidden; /* Ito ang papatay sa scrollbar */
+    height: 152px; /* Lock natin ang height */
+    overflow: hidden !important; /* Ito ang papatay sa scrollbar */
     border-radius: 12px;
     margin-bottom: 20px;
     position: relative;
-    z-index: 1;
+    background: #000;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Animation */
 }
 
-iframe {
+.spotify-wrapper iframe {
     width: 100% !important;
-    border: none !important; /* Tanggalin default border */
-    box-shadow: 0 4px 20px rgba(0,0,0,0.6); 
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    display: block; /* Para walang extra space sa baba */
+    height: 152px !important;
+    border: none !important;
+    overflow: hidden !important;
+    display: block;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
 }
 
-iframe:hover {
-    transform: translateY(-2px); /* Slight lift effect */
-    box-shadow: 0 0 15px rgba(212, 175, 55, 0.3); /* Gold glow */
+/* Hover Effect (Ibinalik natin dito sa wrapper) */
+.spotify-wrapper:hover {
+    transform: translateY(-2px); /* Aangat nang konti */
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.4); /* Gold Glow */
+    border: 1px solid var(--gold); /* Gold Border pag hover */
+}
+/* Optional: Tanggalin ang scrollbar forced by webkit (Chrome/Edge) */
+.spotify-wrapper iframe::-webkit-scrollbar {
+    display: none;
 }
