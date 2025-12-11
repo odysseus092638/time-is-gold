@@ -504,13 +504,13 @@ select option {
 /* Style para sa Close/Cancel button (Gaya ng Focus Timer pero rectangular) */
 .btn-cancel {
     background: transparent !important;
-    border: 1px solid var(--white) !important;
-    border-color: var(--white) !important;
-    color: var(--white) !important;
-    font-weight: 600;
+    border: 1px solid #ffffff !important; /* White Border */
+    color: #ffffff !important;            /* White Text */
+    font-weight: 500;
     transition: all 0.3s ease;
     padding: 8px 20px;
     border-radius: 4px;
+    opacity: 0.7; /* Slight fade para di masyadong matingkad */
 }
 
 .btn-cancel:hover {
