@@ -354,3 +354,49 @@ main.expanded {
     color: white !important;
     border: 1px solid #444 !important;
 }
+/* --- FINAL FIXES: FOOD PLAN & BUTTONS --- */
+
+/* 1. FOOD PLAN FIX (Preserve Line Breaks) */
+.food-plan-box {
+    white-space: pre-wrap !important; /* Ito ang solusyon para di maging straight line */
+    overflow-y: visible !important;   /* Siguraduhin kita lahat */
+    height: auto !important;          /* Hayaan lumaki base sa text */
+    min-height: 80px;                 /* Minimum height */
+}
+
+/* 2. SAVE BUTTON & UPDATE PROFILE BUTTON (Ghost Style) */
+/* Ito yung ginagamit ng Save at Update Profile */
+.btn-save {
+    background: transparent !important;       /* Transparent muna */
+    border: 1px solid var(--gold) !important; /* Gold Border */
+    color: var(--gold) !important;            /* Gold Text */
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-save:hover {
+    background: var(--gold) !important;       /* Gold Background pag hover */
+    color: black !important;                  /* Black Text pag hover */
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+}
+
+/* 3. RENAME BUTTON (Gagayahin sa Pomodoro style) */
+.btn-icon-only {
+    background: transparent !important;
+    border: 1px solid var(--gold) !important; /* Lagyan natin ng border para kita */
+    color: var(--gold) !important;
+    border-radius: 4px !important;            /* Square na may konting curve */
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10px;
+    transition: all 0.3s ease;
+}
+
+.btn-icon-only:hover {
+    background: var(--gold) !important;
+    color: black !important;
+    transform: scale(1.05);
+}
