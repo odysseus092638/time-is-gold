@@ -209,12 +209,45 @@ async function saveTasks() {
     setTimeout(() => { btn.innerHTML = originalText; }, 2000);
 }
 
+// --- DOWNLOAD LOGIC WITH LINE BREAK FIX ---
 document.getElementById('downloadBtn').addEventListener('click', () => {
-    html2canvas(document.getElementById('capture-area'), { backgroundColor: "#121212" }).then(c => {
+    const captureArea = document.getElementById('capture-area');
+    const textarea = document.getElementById('food-plan-input');
+
+    // 1. Gumawa ng temporary DIV na kamukha ng textarea
+    const div = document.createElement('div');
+    
+    // Kopyahin ang styles ng textarea para parehas itsura
+    div.className = 'food-plan-box'; 
+    div.style.minHeight = '80px';
+    div.style.border = '1px solid #333';
+    div.style.color = '#ffffff'; 
+    div.style.padding = '15px';
+    div.style.background = 'transparent';
+    div.style.fontFamily = "'Poppins', sans-serif";
+    div.style.fontSize = "0.9rem";
+    
+    // IMPORTANT: Palitan ang "Enter" (\n) ng HTML Break (<br>)
+    // Ito ang magpapa-baba sa text sa image
+    div.innerHTML = textarea.value.replace(/\n/g, '<br>');
+
+    // 2. Itago ang textarea, ilabas ang div
+    textarea.style.display = 'none';
+    textarea.parentNode.insertBefore(div, textarea);
+
+    // 3. Capture Image
+    html2canvas(captureArea, { 
+        backgroundColor: "#121212",
+        scale: 2 // Mas malinaw na quality
+    }).then(c => {
         const a = document.createElement('a');
         a.download = 'TimeIsGold_Schedule.png';
         a.href = c.toDataURL();
         a.click();
+
+        // 4. Ibalik sa dati (Remove div, Show textarea)
+        div.remove();
+        textarea.style.display = 'block';
     });
 });
 
