@@ -130,10 +130,14 @@ body {
 main {
     background-color: var(--black);
     min-height: 100vh;
-    margin-left: var(--sidebar-width); /* Push content to right */
+    
+    /* Desktop: Itulak pakanan base sa lapad ng sidebar */
+    margin-left: var(--sidebar-width); 
     width: calc(100% - var(--sidebar-width));
-    transition: all 0.3s ease-in-out; /* Smooth slide animation */
+    
+    transition: all 0.3s ease-in-out;
     padding: 2rem;
+    position: relative; /* Safety net */
 }
 
 /* Class to expand main content when sidebar is hidden */
