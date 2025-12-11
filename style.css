@@ -545,3 +545,25 @@ select option {
     border-color: var(--gold);
     font-weight: bold;
 }
+/* --- FINAL LAYOUT FIX --- */
+body, html {
+    overflow-x: hidden !important; /* Papatayin ang horizontal scrollbar */
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+main {
+    /* Siguraduhing sakto lang ang lapad */
+    width: calc(100% - var(--sidebar-width));
+    max-width: 100vw;
+    overflow-x: hidden;
+}
+
+/* Mobile Fix */
+@media (max-width: 767px) {
+    main {
+        width: 100%;
+        margin-left: 0;
+    }
+}
