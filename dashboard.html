@@ -274,11 +274,19 @@
                     <textarea id="my-sticky-note" class="sticky-note-area" rows="12" placeholder="Write your thoughts here..."></textarea>
                 </div>
                 <!-- Footer (Floating Save Button) -->
-                <div class="text-center mt-3">
-                    <button class="btn btn-save shadow-lg" style="background: black !important;" onclick="saveNotes()">
+                <div class="text-center mt-3 pb-4"> <!-- Added pb-4 for spacing -->
+                    
+                    <!-- SAVE BUTTON (Tinanggal ko na yung style="background:black") -->
+                    <!-- Dahil dito, gagana na yung .btn-save class galing CSS -->
+                    <button class="btn btn-save shadow-lg px-4 py-2" onclick="saveNotes()">
                         <i class="fa-solid fa-floppy-disk"></i> &nbsp; Save Notes
                     </button>
-                    <button class="btn btn-sm text-white ms-2" data-bs-dismiss="modal">Close</button>
+
+                    <!-- CLOSE BUTTON (Gamit na ang bagong .btn-cancel class) -->
+                    <button class="btn btn-cancel ms-2" data-bs-dismiss="modal">
+                        Close
+                    </button>
+                    
                 </div>
             </div>
         </div>
