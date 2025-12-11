@@ -42,6 +42,10 @@
                 <button class="btn btn-outline-secondary border-secondary text-white w-100 mb-4" data-bs-toggle="modal" data-bs-target="#spotifyModal">
                     <i class="fa-brands fa-spotify text-success"></i> &nbsp; Vibe Station
                 </button>
+                <!-- NEW: STICKY NOTES BUTTON -->
+                <button class="btn btn-outline-secondary border-secondary text-white w-100 mb-4" onclick="openNotes()">
+                    <i class="fa-solid fa-note-sticky text-warning"></i> &nbsp; Sticky Notes
+                </button>
 <!-- === END SPOTIFY === -->
 
 
@@ -251,6 +255,30 @@
                         allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
                         loading="lazy">
                     </iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- MODAL 6: STICKY NOTES -->
+    <div class="modal fade" id="notesModal" tabindex="-1" aria-hidden="true" style="z-index: 1060;">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="background: transparent; border: none;">
+                <!-- Header na mukhang Tape/Paper Clip -->
+                <div class="modal-header border-0 p-0">
+                    <div style="background: var(--gold); width: 100%; padding: 10px; border-radius: 5px 5px 0 0; text-align: center; color: black; font-weight: bold;">
+                        <i class="fa-solid fa-pen"></i> &nbsp; QUICK NOTES
+                    </div>
+                </div>
+                <!-- Body -->
+                <div class="modal-body p-0">
+                    <textarea id="my-sticky-note" class="sticky-note-area" rows="12" placeholder="Write your thoughts here..."></textarea>
+                </div>
+                <!-- Footer (Floating Save Button) -->
+                <div class="text-center mt-3">
+                    <button class="btn btn-save shadow-lg" style="background: black !important;" onclick="saveNotes()">
+                        <i class="fa-solid fa-floppy-disk"></i> &nbsp; Save Notes
+                    </button>
+                    <button class="btn btn-sm text-white ms-2" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>

@@ -10,13 +10,53 @@ let selectedCategory = "";
 let addModal, optionsModal, profileModal;
 let timerInterval;
 let timeLeft = 25 * 60;
+let notesModal;
 
 document.addEventListener('DOMContentLoaded', () => {
     addModal = new bootstrap.Modal(document.getElementById('addModal'));
     optionsModal = new bootstrap.Modal(document.getElementById('optionsModal'));
     profileModal = new bootstrap.Modal(document.getElementById('profileModal'));
+    notesModal = new bootstrap.Modal(document.getElementById('notesModal'));
     checkUser();
 });
+// 1. Open Notes (Fetch data first)
+async function openNotes() {
+    const { data: { user } } = await sb.auth.getUser();
+    
+    // Check if user has a note entry
+    const { data, error } = await sb.from('notes').select('content').eq('user_id', user.id).single();
+
+    if (data) {
+        // If notes exist, show them
+        document.getElementById('my-sticky-note').value = data.content;
+    } else {
+        // If first time, create an empty row
+        await sb.from('notes').insert([{ user_id: user.id, content: "" }]);
+        document.getElementById('my-sticky-note').value = "";
+    }
+
+    notesModal.show();
+}
+
+// 2. Save Notes
+async function saveNotes() {
+    const { data: { user } } = await sb.auth.getUser();
+    const content = document.getElementById('my-sticky-note').value;
+
+    const btn = document.querySelector('#notesModal .btn-save');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = 'Saving...';
+
+    // Update the existing row
+    const { error } = await sb.from('notes').update({ content: content }).eq('user_id', user.id);
+
+    if (error) {
+        alert("Error saving notes: " + error.message);
+    } else {
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Saved';
+        setTimeout(() => { btn.innerHTML = originalText; }, 1500);
+    }
+}
 
 async function checkUser() {
     const { data: { session } } = await sb.auth.getSession();

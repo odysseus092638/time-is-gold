@@ -467,3 +467,37 @@ main.expanded {
     font-weight: 600;
     display: inline-block;
 }
+/* --- FIX INVISIBLE DROPDOWN OPTIONS --- */
+select option {
+    background-color: #121212 !important; /* Dark Background */
+    color: white !important; /* White Text */
+}
+
+/* --- STICKY NOTES STYLES --- */
+.sticky-note-area {
+    background-color: #fff9c4; /* Classic Sticky Note Yellow (pwede mo gawing dark kung gusto mo) */
+    color: #333; /* Dark text for contrast */
+    border: none;
+    border-radius: 0 0 5px 5px;
+    width: 100%;
+    padding: 20px;
+    font-family: 'Courier New', Courier, monospace; /* Typewriter feel */
+    font-size: 1rem;
+    line-height: 1.5;
+    resize: none;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
+}
+
+.sticky-note-area:focus {
+    outline: none;
+    background-color: #fff59d;
+}
+
+/* Dark Mode Sticky Note Variant (Optional - Uncomment if you prefer dark) */
+/* 
+.sticky-note-area {
+    background-color: #222;
+    color: var(--gold);
+    border: 1px solid var(--gold);
+} 
+*/
