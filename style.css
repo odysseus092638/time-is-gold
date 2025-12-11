@@ -400,3 +400,10 @@ main.expanded {
     color: black !important;
     transform: scale(1.05);
 }
+/* Ensure Modals appear above Sidebar */
+.modal-backdrop {
+    z-index: 1050 !important;
+}
+.modal {
+    z-index: 1060 !important; /* Mas mataas sa Sidebar (1000) */
+}
