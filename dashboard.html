@@ -38,11 +38,14 @@
                     <div class="text-center mt-5"><small class="text-muted">Loading...</small></div>
                 </div>
                 <!-- === SPOTIFY EMBED === -->
-<div class="mt-4 mb-3 spotify-wrapper">
-        <p class="small text-muted text-uppercase fw-bold ms-1 mb-2" style="font-size: 0.7rem; letter-spacing: 1px;">
-            <i class="fa-brands fa-spotify"></i> &nbsp; Vibe Station
-        </p>
-        
+<div class="mt-4 mb-3">
+    <!-- TITLE (Nasa labas na ng wrapper para hindi makain ang space) -->
+    <p class="small text-muted text-uppercase fw-bold ms-1 mb-2" style="font-size: 0.7rem; letter-spacing: 1px;">
+        <i class="fa-brands fa-spotify"></i> &nbsp; Vibe Station
+    </p>
+    
+    <!-- WRAPPER (Ito lang ang may fixed height na 152px) -->
+    <div class="spotify-wrapper">
         <iframe 
             src="https://open.spotify.com/embed/track/3pXF1nA74528Edde4of9CC?utm_source=generator&theme=0" 
             width="100%" 
@@ -51,10 +54,11 @@
             allowfullscreen="" 
             allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
             loading="lazy"
-            scrolling="no" 
-            style="border:none; overflow:hidden; height:152px;"> <!-- ETO ANG SUSI -->
+            scrolling="no"
+            style="border:none; overflow:hidden; height:152px;">
         </iframe>
     </div>
+</div>
 <!-- === END SPOTIFY === -->
 
 
