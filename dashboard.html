@@ -4,135 +4,138 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard | Time is Gold</title>
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-            <!-- SIDEBAR -->
-            <nav class="sidebar p-4 collapse show" id="sidebarMenu">
-                <div class="sidebar-brand">Time is Gold</div>
-                
-                <!-- GREETING AREA -->
-                <div class="text-center mb-4">
-                    <small class="text-muted text-uppercase" style="font-size: 0.7rem;">Welcome,</small>
-                    <h5 id="sidebar-username" class="fw-bold text-white">User</h5>
-                </div>
 
-                <!-- NEW SCHEDULE BUTTON -->
-                <button class="btn btn-new-schedule w-100 mb-3" data-bs-toggle="modal" data-bs-target="#addModal">
-                    <i class="fa-solid fa-plus"></i> &nbsp; New Schedule
-                </button>
-
-                <!-- NEW POMODORO BUTTON -->
-                <button class="btn btn-outline-secondary border-secondary text-white w-100 mb-4" data-bs-toggle="modal" data-bs-target="#pomodoroModal">
-                    <i class="fa-solid fa-clock"></i> &nbsp; Focus Timer
-                </button>
-                
-                <p class="small text-muted text-uppercase fw-bold mb-3 ms-1" style="font-size: 0.7rem;">My Lists</p>
-                <div id="schedule-list">
-                    <div class="text-center mt-5"><small class="text-muted">Loading...</small></div>
-                </div>
-                <!-- SPACER (Para bumaba nang konti ang buttons mula sa listahan) -->
-                <div class="mt-4"></div>
-
-                <!-- GROUPED BUTTONS (VIBE & NOTES) -->
-                <!-- Gamit ang 'd-grid gap-2' para dikit sila -->
-                <div class="d-grid gap-2">
-                    
-                    <!-- SPOTIFY BUTTON -->
-                    <button class="btn btn-outline-secondary border-secondary text-white w-100" data-bs-toggle="modal" data-bs-target="#spotifyModal">
-                        <i class="fa-brands fa-spotify text-success"></i> &nbsp; Vibe Station
-                    </button>
-
-                    <!-- STICKY NOTES BUTTON -->
-                    <button class="btn btn-outline-secondary border-secondary text-white w-100" onclick="openNotes()">
-                        <i class="fa-solid fa-note-sticky text-warning"></i> &nbsp; Sticky Notes
-                    </button>
-
-                </div>
-
-                <!-- BOTTOM BUTTONS (Settings & Logout) -->
-                <div class="mt-5 pt-5 border-top border-secondary">
-                    <div class="d-flex gap-2">
-                        <button onclick="openProfile()" class="btn btn-sm btn-outline-light flex-grow-1">
-                            <i class="fa-solid fa-gear"></i> Settings
-                        </button>
-                        <button onclick="logout()" class="btn btn-sm btn-logout flex-grow-1">
-                            <i class="fa-solid fa-power-off"></i>
-                        </button>
-                    </div>
-                </div>
-
-           <!-- MAIN CONTENT -->
-            <main class="px-md-5 py-5" id="main-content">
-                
-                <!-- NEW: DESKTOP COLLAPSE BUTTON -->
-                <button class="btn btn-toggle-sidebar" onclick="toggleSidebar()" title="Toggle Sidebar">
-                    <i class="fa-solid fa-bars-staggered"></i>
-                </button>
-
-                <!-- EXISTING: MOBILE MENU BUTTON -->
-                <button class="btn btn-dark d-md-none mb-3 border border-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
-                    <i class="fa-solid fa-bars"></i>
-                </button>
-
-                <!-- EDITOR AREA -->
-               <div id="editor-area" class="d-none">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <div class="d-flex align-items-center gap-2">
-                            <h2 id="current-title" class="fw-bold text-white mt-1 m-0">Title</h2>
-                            <button class="btn-icon-only" onclick="renameSchedulePrompt()" title="Rename">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                                <span>Rename</span>
-                            </button>
-                        </div>
-                        
-                        <div class="btn-group gap-2">
-                            <!-- SAVE BUTTON WITH TEXT -->
-                            <button class="btn btn-save shadow-sm" onclick="saveTasks()">
-                                <i class="fa-solid fa-floppy-disk"></i>
-                                <span>Save</span>
-                            </button>
-                            <!-- IMAGE BUTTON WITH TEXT -->
-                            <button class="btn btn-download shadow-sm" id="downloadBtn">
-                                <i class="fa-solid fa-image"></i>
-                                <span>Image</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div id="convert-area" class="mb-3 d-none">
-                        <button class="btn btn-convert w-100" onclick="convertToEveryday()">
-                            <i class="fa-solid fa-repeat"></i> &nbsp; Make this an <b>Everyday Routine</b>? (It won't expire)
-                        </button>
-                    </div>
-
-                    <div id="capture-area">
-                        <h3 id="display-title">Title</h3>
-                        <div class="mb-4 mt-4">
-                            <label class="text-muted small text-uppercase mb-2" style="letter-spacing: 1px; color: var(--gold) !important;">
-                                <i class="fa-solid fa-utensils"></i> &nbsp; Food Plan
-                            </label>
-                            <textarea id="food-plan-input" class="food-plan-box" rows="3" placeholder="Breakfast: ... &#10;Lunch: ... &#10;Dinner: ..."></textarea>
-                        </div>
-                        <div class="border-top border-secondary my-4"></div>
-                        <div id="task-list" class="mt-4"></div>
-                        <button class="btn btn-add-task w-100 mt-5 py-3" onclick="addTaskRow()">
-                            <i class="fa-solid fa-plus"></i> &nbsp; Add New Activity
-                        </button>
-                    </div>
-                </div>
-
-                <!-- EMPTY STATE -->
-                <div id="empty-state" class="text-center mt-5 pt-5">
-                    <i class="fa-solid fa-layer-group fa-4x text-muted mb-4 opacity-25"></i>
-                    <h3 class="text-muted fw-light">Select a schedule to begin</h3>
-                </div>
-            </main>
+    <!-- SIDEBAR -->
+    <nav class="sidebar p-4 collapse show" id="sidebarMenu">
+        <div class="sidebar-brand">Time is Gold</div>
         
-    
+        <!-- GREETING AREA -->
+        <div class="text-center mb-4">
+            <small class="text-muted text-uppercase" style="font-size: 0.7rem;">Welcome,</small>
+            <h5 id="sidebar-username" class="fw-bold text-white">User</h5>
+        </div>
+
+        <!-- NEW SCHEDULE BUTTON -->
+        <button class="btn btn-new-schedule w-100 mb-3" data-bs-toggle="modal" data-bs-target="#addModal">
+            <i class="fa-solid fa-plus"></i> &nbsp; New Schedule
+        </button>
+
+        <!-- FOCUS TIMER BUTTON -->
+        <button class="btn btn-outline-secondary border-secondary text-white w-100 mb-4" data-bs-toggle="modal" data-bs-target="#pomodoroModal">
+            <i class="fa-solid fa-clock"></i> &nbsp; Focus Timer
+        </button>
+        
+        <!-- SCHEDULE LIST -->
+        <p class="small text-muted text-uppercase fw-bold mb-3 ms-1" style="font-size: 0.7rem;">My Lists</p>
+        <div id="schedule-list">
+            <div class="text-center mt-5"><small class="text-muted">Loading...</small></div>
+        </div>
+
+        <!-- SPACER -->
+        <div class="mt-4"></div>
+
+        <!-- GROUPED BUTTONS (VIBE & NOTES) -->
+        <div class="d-grid gap-2">
+            <!-- SPOTIFY BUTTON -->
+            <button class="btn btn-outline-secondary border-secondary text-white w-100" data-bs-toggle="modal" data-bs-target="#spotifyModal">
+                <i class="fa-brands fa-spotify text-success"></i> &nbsp; Vibe Station
+            </button>
+
+            <!-- STICKY NOTES BUTTON -->
+            <button class="btn btn-outline-secondary border-secondary text-white w-100" onclick="openNotes()">
+                <i class="fa-solid fa-note-sticky text-warning"></i> &nbsp; Sticky Notes
+            </button>
+        </div>
+
+        <!-- BOTTOM BUTTONS (Settings & Logout) -->
+        <div class="mt-5 pt-5 border-top border-secondary">
+            <div class="d-flex gap-2">
+                <button onclick="openProfile()" class="btn btn-sm btn-outline-light flex-grow-1">
+                    <i class="fa-solid fa-gear"></i> Settings
+                </button>
+                <button onclick="logout()" class="btn btn-sm btn-logout flex-grow-1">
+                    <i class="fa-solid fa-power-off"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="px-md-5 py-5" id="main-content">
+        
+        <!-- DESKTOP COLLAPSE BUTTON -->
+        <button class="btn btn-toggle-sidebar" onclick="toggleSidebar()" title="Toggle Sidebar">
+            <i class="fa-solid fa-bars-staggered"></i>
+        </button>
+
+        <!-- MOBILE MENU BUTTON -->
+        <button class="btn btn-dark d-md-none mb-3 border border-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <!-- EDITOR AREA -->
+        <div id="editor-area" class="d-none">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="d-flex align-items-center gap-2">
+                    <h2 id="current-title" class="fw-bold text-white mt-1 m-0">Title</h2>
+                    <button class="btn-icon-only" onclick="renameSchedulePrompt()" title="Rename">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                        <span>Rename</span>
+                    </button>
+                </div>
+                
+                <div class="btn-group gap-2">
+                    <button class="btn btn-save shadow-sm" onclick="saveTasks()">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        <span>Save</span>
+                    </button>
+                    <button class="btn btn-download shadow-sm" id="downloadBtn">
+                        <i class="fa-solid fa-image"></i>
+                        <span>Image</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="convert-area" class="mb-3 d-none">
+                <button class="btn btn-convert w-100" onclick="convertToEveryday()">
+                    <i class="fa-solid fa-repeat"></i> &nbsp; Make this an <b>Everyday Routine</b>? (It won't expire)
+                </button>
+            </div>
+
+            <div id="capture-area">
+                <h3 id="display-title">Title</h3>
+                <div class="mb-4 mt-4">
+                    <label class="text-muted small text-uppercase mb-2" style="letter-spacing: 1px; color: var(--gold) !important;">
+                        <i class="fa-solid fa-utensils"></i> &nbsp; Food Plan
+                    </label>
+                    <textarea id="food-plan-input" class="food-plan-box" rows="3" placeholder="Breakfast: ... &#10;Lunch: ... &#10;Dinner: ..."></textarea>
+                </div>
+                <div class="border-top border-secondary my-4"></div>
+                <div id="task-list" class="mt-4"></div>
+                <button class="btn btn-add-task w-100 mt-5 py-3" onclick="addTaskRow()">
+                    <i class="fa-solid fa-plus"></i> &nbsp; Add New Activity
+                </button>
+            </div>
+        </div>
+
+        <!-- EMPTY STATE -->
+        <div id="empty-state" class="text-center mt-5 pt-5">
+            <i class="fa-solid fa-layer-group fa-4x text-muted mb-4 opacity-25"></i>
+            <h3 class="text-muted fw-light">Select a schedule to begin</h3>
+        </div>
+    </main>
+
+    <!-- ================= MODALS AREA ================= -->
 
     <!-- MODAL 1: ADD NEW -->
     <div class="modal fade" id="addModal" tabindex="-1">
@@ -186,9 +189,7 @@
                     <p class="timer-explanation">
                         The <b>Pomodoro Technique</b> uses a timer to break down work into intervals, traditionally 25 minutes in length, separated by short breaks.
                     </p>
-                    
                     <div class="timer-display" id="timer-text">25:00</div>
-                    
                     <div class="d-flex justify-content-center gap-3 mt-4">
                         <button class="btn-timer-control" onclick="startTimer()" title="Start"><i class="fa-solid fa-play"></i></button>
                         <button class="btn-timer-control" onclick="pauseTimer()" title="Pause"><i class="fa-solid fa-pause"></i></button>
@@ -208,8 +209,6 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body text-center p-4">
-    
-                    <!-- PROFILE SECTION -->
                     <div class="profile-avatar" id="avatar-initial">U</div>
                     
                     <label class="text-muted small text-uppercase mb-1">Display Name</label>
@@ -224,7 +223,6 @@
 
                     <hr class="border-secondary my-4">
 
-                    <!-- DANGER ZONE -->
                     <p class="text-danger small fw-bold text-uppercase mb-2">Danger Zone</p>
                     <button class="btn btn-destroy w-100 py-2" onclick="destroyAccount()">
                         <i class="fa-solid fa-skull"></i> &nbsp; DESTROY ALL DATA
@@ -236,7 +234,6 @@
             </div>
         </div>
     </div>
-   <!-- ================= MODALS AREA ================= -->
 
     <!-- MODAL 5: SPOTIFY VIBE STATION -->
     <div class="modal fade" id="spotifyModal" tabindex="-1" aria-hidden="true" style="z-index: 1060;">
@@ -249,7 +246,6 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" style="filter: invert(1);"></button>
                 </div>
                 <div class="modal-body p-0">
-                    <!-- PLAYLIST SELECTOR -->
                     <div class="d-flex gap-2 p-3 overflow-auto" style="white-space: nowrap;">
                          <button class="btn btn-sm btn-playlist active" onclick="changeSpotifySource(this, 'https://open.spotify.com/embed/playlist/3sdEH7HfFE3d4xry5RnnLr?utm_source=generator')">My Vibe</button>
                          <button class="btn btn-sm btn-playlist" onclick="changeSpotifySource(this, 'https://open.spotify.com/embed/album/1kCHru7uhxBUdzkm4gzRQc?utm_source=generator')">📚 Study</button>
@@ -257,14 +253,13 @@
                          <button class="btn btn-sm btn-playlist" onclick="changeSpotifySource(this, 'https://open.spotify.com/embed/playlist/4VDYMQDrr8C2BpGxjcgNcD?utm_source=generator')">💪 Workout</button>
                          <button class="btn btn-sm btn-playlist" onclick="changeSpotifySource(this, 'https://open.spotify.com/embed/album/0yURloAyqmXCjQ1rmX0ltA?utm_source=generator')">🌙 Sleep</button>
                     </div>
-                    <!-- IFRAME -->
                     <iframe id="spotify-frame" style="border-radius: 0 0 12px 12px;" src="https://open.spotify.com/embed/playlist/3sdEH7HfFE3d4xry5RnnLr?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- MODAL 6: STICKY NOTES (MISSING FIX) -->
+    <!-- MODAL 6: STICKY NOTES -->
     <div class="modal fade" id="notesModal" tabindex="-1" aria-hidden="true" style="z-index: 1060;">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content" style="background: transparent; border: none;">
