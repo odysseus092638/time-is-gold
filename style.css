@@ -400,14 +400,25 @@ main.expanded {
     color: black !important;
     transform: scale(1.05);
 }
-/* Spotify Iframe Container */
+/* --- SPOTIFY WIDGET FIX --- */
+.spotify-wrapper {
+    width: 100%;
+    overflow: hidden; /* Ito ang papatay sa scrollbar */
+    border-radius: 12px;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+}
+
 iframe {
-    box-shadow: 0 4px 15px rgba(0,0,0,0.5); /* Lagyan ng shadow para umangat */
-    border: 1px solid #333; /* Dark border para blend sa theme */
-    transition: transform 0.3s ease;
+    width: 100% !important;
+    border: none !important; /* Tanggalin default border */
+    box-shadow: 0 4px 20px rgba(0,0,0,0.6); 
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: block; /* Para walang extra space sa baba */
 }
 
 iframe:hover {
-    transform: scale(1.02); /* Slight zoom effect pag hinover */
-    border-color: var(--gold); /* Gold border glow */
+    transform: translateY(-2px); /* Slight lift effect */
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.3); /* Gold glow */
 }
