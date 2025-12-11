@@ -403,7 +403,67 @@ main.expanded {
 /* Ensure Modals appear above Sidebar */
 .modal-backdrop {
     z-index: 1050 !important;
-}
+} 
 .modal {
     z-index: 1060 !important; /* Mas mataas sa Sidebar (1000) */
+}
+/* --- SECTION BOX (For Everyday Routine) --- */
+.schedule-section {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 25px;
+    position: relative;
+}
+
+.section-title-input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px dashed var(--gold);
+    color: var(--gold);
+    font-weight: bold;
+    font-size: 1.1rem;
+    width: 100%;
+    margin-bottom: 15px;
+    padding: 5px;
+}
+
+.section-title-input:focus {
+    outline: none;
+    background: rgba(212, 175, 55, 0.1);
+}
+
+.btn-add-row-inside {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    background: transparent;
+    border: 1px dashed #555;
+    width: 100%;
+    padding: 8px;
+    margin-top: 10px;
+}
+
+.btn-add-row-inside:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+}
+
+/* --- BUTTON LABELS FIX --- */
+/* Gawing visible ang text sa tabi ng icon */
+.btn-icon-only, .btn-download, .btn-save {
+    width: auto !important; /* Allow width to grow */
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+    border-radius: 4px !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px; /* Space between icon and text */
+}
+
+/* Ensure text is visible */
+.btn-icon-only span, .btn-download span, .btn-save span {
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-block;
 }

@@ -9,24 +9,19 @@ let selectedScheduleTitle = "";
 let selectedCategory = "";
 let addModal, optionsModal, profileModal;
 let timerInterval;
-let timeLeft = 25 * 60; // 25 minutes in seconds
+let timeLeft = 25 * 60;
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Init Modals
     addModal = new bootstrap.Modal(document.getElementById('addModal'));
     optionsModal = new bootstrap.Modal(document.getElementById('optionsModal'));
     profileModal = new bootstrap.Modal(document.getElementById('profileModal'));
-    
     checkUser();
 });
 
 async function checkUser() {
     const { data: { session } } = await sb.auth.getSession();
     if (!session) window.location.href = 'index.html';
-    else {
-        loadSidebar();
-        loadUserProfile(); // Load name on startup
-    }
+    else { loadSidebar(); loadUserProfile(); }
 }
 
 function getLocalISODate(dateObj) {
@@ -72,15 +67,9 @@ async function createSchedule(type) {
 async function loadSidebar() {
     const { data: { session } } = await sb.auth.getSession();
     if(!session) return;
-
     const localTodayStr = getLocalISODate(new Date());
 
-    const { data } = await sb
-        .from('schedules')
-        .select('*')
-        .eq('user_id', session.user.id)
-        .order('created_at', { ascending: false });
-
+    const { data } = await sb.from('schedules').select('*').eq('user_id', session.user.id).order('created_at', { ascending: false });
     const list = document.getElementById('schedule-list');
     list.innerHTML = '';
 
@@ -110,31 +99,184 @@ function showOptions(id, title, category) {
     optionsModal.show();
 }
 
+// --- EDITOR LOGIC (THE BIG CHANGE) ---
 async function enterEditMode() {
     optionsModal.hide(); 
     document.getElementById('empty-state').classList.add('d-none');
+    document.getElementById('editor-area').classList.remove('d-none');
     
-    const editor = document.getElementById('editor-area');
-    editor.classList.remove('d-none');
-    
-    if (window.innerWidth < 768) editor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (window.innerWidth < 768) document.getElementById('editor-area').scrollIntoView({ behavior: 'smooth', block: 'start' });
     
     document.getElementById('current-title').innerText = selectedScheduleTitle;
     document.getElementById('display-title').innerText = selectedScheduleTitle;
 
+    // Handle "Make Everyday" button visibility
     const convertArea = document.getElementById('convert-area');
     if (selectedCategory === 'Everyday') convertArea.classList.add('d-none');
     else convertArea.classList.remove('d-none');
 
+    // Load Food Plan
     const { data: schedData } = await sb.from('schedules').select('food_plan').eq('id', selectedScheduleId).single();
     if(schedData) document.getElementById('food-plan-input').value = schedData.food_plan || "";
 
+    // Change Main Button Text based on Category
+    const mainAddBtn = document.querySelector('.btn-add-task');
+    if (selectedCategory === 'Everyday') {
+        mainAddBtn.innerHTML = '<i class="fa-solid fa-layer-group"></i> &nbsp; Add New Group';
+        mainAddBtn.onclick = () => addSectionBlock(); // New Logic
+    } else {
+        mainAddBtn.innerHTML = '<i class="fa-solid fa-plus"></i> &nbsp; Add New Activity';
+        mainAddBtn.onclick = () => addTaskRow(); // Old Logic
+    }
+
+    // Load Tasks (Grouped for Everyday, Flat for Today/Tomorrow)
+    loadTasks();
+}
+
+async function loadTasks() {
     const { data } = await sb.from('tasks').select('*').eq('schedule_id', selectedScheduleId).order('id');
     const taskList = document.getElementById('task-list');
     taskList.innerHTML = '';
-    if(data) data.forEach(t => addTaskRow(t.time_slot, t.activity));
+
+    if (selectedCategory === 'Everyday') {
+        // GROUPING LOGIC FOR EVERYDAY
+        // 1. Get unique sections
+        const sections = [...new Set(data.map(item => item.section_title || "Uncategorized"))];
+        
+        sections.forEach(sectionTitle => {
+            // Create Section UI
+            const sectionDiv = addSectionBlock(sectionTitle);
+            
+            // Filter tasks for this section
+            const sectionTasks = data.filter(t => (t.section_title || "Uncategorized") === sectionTitle);
+            
+            sectionTasks.forEach(t => {
+                // Add row inside the section
+                addSectionRow(sectionDiv.querySelector('.section-tasks-container'), t.day, t.time_slot, t.activity);
+            });
+        });
+
+    } else {
+        // NORMAL LOGIC FOR TODAY/TOMORROW
+        if(data) data.forEach(t => addTaskRow(t.time_slot, t.activity));
+    }
 }
 
+// --- NEW: EVERYDAY SECTION LOGIC ---
+
+// 1. Add a Block/Box
+function addSectionBlock(title = "New Group") {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'schedule-section';
+    wrapper.innerHTML = `
+        <div class="d-flex justify-content-between">
+            <input type="text" class="section-title-input" value="${title}" placeholder="Group Name (e.g. Morning)">
+            <button class="btn btn-sm text-danger" onclick="this.closest('.schedule-section').remove()" title="Delete Group">
+                <i class="fa-solid fa-trash"></i>
+            </button>
+        </div>
+        <div class="section-tasks-container"></div>
+        <button class="btn btn-add-row-inside" onclick="addSectionRow(this.previousElementSibling)">
+            <i class="fa-solid fa-plus"></i> Add Activity
+        </button>
+    `;
+    document.getElementById('task-list').appendChild(wrapper);
+    return wrapper;
+}
+
+// 2. Add a Row inside the Block
+function addSectionRow(container, day = "Mon", time = "", act = "") {
+    const div = document.createElement('div');
+    div.className = 'row mb-2 task-row-everyday';
+    div.innerHTML = `
+        <div class="col-3 px-1">
+            <select class="form-control t-day" style="font-size: 0.8rem; padding: 10px 5px; background: transparent; color: white; border-bottom: 1px solid #333; border-top:0; border-left:0; border-right:0;">
+                <option value="Mon" ${day === 'Mon' ? 'selected' : ''}>Mon</option>
+                <option value="Tue" ${day === 'Tue' ? 'selected' : ''}>Tue</option>
+                <option value="Wed" ${day === 'Wed' ? 'selected' : ''}>Wed</option>
+                <option value="Thu" ${day === 'Thu' ? 'selected' : ''}>Thu</option>
+                <option value="Fri" ${day === 'Fri' ? 'selected' : ''}>Fri</option>
+                <option value="Sat" ${day === 'Sat' ? 'selected' : ''}>Sat</option>
+                <option value="Sun" ${day === 'Sun' ? 'selected' : ''}>Sun</option>
+                <option value="All" ${day === 'All' ? 'selected' : ''}>Everyday</option>
+            </select>
+        </div>
+        <div class="col-3 px-1">
+            <input type="time" class="form-control t-time" value="${time}" style="color-scheme: dark;">
+        </div>
+        <div class="col-5 px-1">
+            <input type="text" class="form-control t-act" value="${act}" placeholder="Activity">
+        </div>
+        <div class="col-1 px-0 text-center">
+            <button class="btn btn-sm text-secondary mt-2" onclick="this.closest('.row').remove()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+    `;
+    container.appendChild(div);
+}
+
+// --- OLD: NORMAL LOGIC (Today/Tomorrow) ---
+function addTaskRow(time = '', act = '') {
+    const div = document.createElement('div');
+    div.className = 'row mb-3 task-row-simple'; 
+    div.innerHTML = `
+        <div class="col-4"><input type="time" class="form-control t-time" value="${time}" style="color-scheme: dark;"></div>
+        <div class="col-7"><input type="text" class="form-control t-act" value="${act}" placeholder="Activity Details"></div>
+        <div class="col-1 text-end"><button class="btn btn-sm text-danger mt-2" onclick="this.parentElement.parentElement.remove()"><i class="fa-solid fa-xmark"></i></button></div>
+    `;
+    document.getElementById('task-list').appendChild(div);
+}
+
+// --- SAVE FUNCTION (UPDATED) ---
+async function saveTasks() {
+    const foodPlanText = document.getElementById('food-plan-input').value;
+    await sb.from('schedules').update({ food_plan: foodPlanText }).eq('id', selectedScheduleId);
+
+    // Delete existing tasks
+    await sb.from('tasks').delete().eq('schedule_id', selectedScheduleId);
+
+    const inserts = [];
+
+    if (selectedCategory === 'Everyday') {
+        // HARVEST EVERYDAY DATA (Sections)
+        const sections = document.querySelectorAll('.schedule-section');
+        sections.forEach(sec => {
+            const title = sec.querySelector('.section-title-input').value;
+            const rows = sec.querySelectorAll('.task-row-everyday');
+            
+            rows.forEach(r => {
+                inserts.push({
+                    schedule_id: selectedScheduleId,
+                    section_title: title, // New Field
+                    day: r.querySelector('.t-day').value, // New Field
+                    time_slot: r.querySelector('.t-time').value,
+                    activity: r.querySelector('.t-act').value
+                });
+            });
+        });
+    } else {
+        // HARVEST NORMAL DATA (Simple)
+        const rows = document.querySelectorAll('.task-row-simple');
+        rows.forEach(r => {
+            inserts.push({
+                schedule_id: selectedScheduleId,
+                section_title: null,
+                day: null,
+                time_slot: r.querySelector('.t-time').value,
+                activity: r.querySelector('.t-act').value
+            });
+        });
+    }
+
+    if(inserts.length > 0) await sb.from('tasks').insert(inserts);
+
+    const btn = document.querySelector('.btn-save');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fa-solid fa-check"></i> <span>Saved</span>';
+    setTimeout(() => { btn.innerHTML = originalText; }, 2000);
+}
+
+// ... (Rename, Convert, Delete, Download, Logout functions same as before) ...
+// Copy paste mo lang yung old helper functions dito sa baba kung nawala
 async function renameSchedulePrompt() {
     const newName = prompt("Rename Schedule:", selectedScheduleTitle);
     if (newName && newName.trim() !== "") {
@@ -145,117 +287,28 @@ async function renameSchedulePrompt() {
         loadSidebar(); 
     }
 }
-
 async function convertToEveryday() {
     if(confirm("Make this your Everyday Routine? It will no longer expire.")) {
-        const { error } = await sb.from('schedules').update({
-            category: 'Everyday',
-            target_date: null,
-            title: selectedScheduleTitle + " (Everyday)"
-        }).eq('id', selectedScheduleId);
-
-        if(error) alert("Error: " + error.message);
-        else {
-            alert("Success! This is now an everyday plan.");
-            selectedCategory = 'Everyday';
-            selectedScheduleTitle += " (Everyday)";
-            enterEditMode(); 
-            loadSidebar();
-        }
+        await sb.from('schedules').update({ category: 'Everyday', target_date: null, title: selectedScheduleTitle + " (Everyday)" }).eq('id', selectedScheduleId);
+        selectedCategory = 'Everyday'; selectedScheduleTitle += " (Everyday)"; enterEditMode(); loadSidebar();
     }
 }
-
 async function deleteSchedule() {
-    if(confirm("Permanently delete this schedule?")) {
-        await sb.from('schedules').delete().eq('id', selectedScheduleId);
-        optionsModal.hide();
-        document.getElementById('editor-area').classList.add('d-none');
-        document.getElementById('empty-state').classList.remove('d-none');
-        loadSidebar();
-    }
+    if(confirm("Permanently delete this schedule?")) { await sb.from('schedules').delete().eq('id', selectedScheduleId); optionsModal.hide(); document.getElementById('editor-area').classList.add('d-none'); document.getElementById('empty-state').classList.remove('d-none'); loadSidebar(); }
 }
-
-function addTaskRow(time = '', act = '') {
-    const div = document.createElement('div');
-    div.className = 'row mb-3 task-row'; 
-    div.innerHTML = `
-        <div class="col-4"><input type="time" class="form-control t-time" value="${time}" style="color-scheme: dark;"></div>
-        <div class="col-7"><input type="text" class="form-control t-act" value="${act}" placeholder="Activity Details"></div>
-        <div class="col-1 text-end"><button class="btn btn-sm text-danger mt-2" onclick="this.parentElement.parentElement.remove()"><i class="fa-solid fa-xmark"></i></button></div>
-    `;
-    document.getElementById('task-list').appendChild(div);
-}
-
-async function saveTasks() {
-    const foodPlanText = document.getElementById('food-plan-input').value;
-    await sb.from('schedules').update({ food_plan: foodPlanText }).eq('id', selectedScheduleId);
-
-    await sb.from('tasks').delete().eq('schedule_id', selectedScheduleId);
-    const rows = document.querySelectorAll('.task-row');
-    const inserts = [];
-    rows.forEach(r => {
-        inserts.push({
-            schedule_id: selectedScheduleId,
-            time_slot: r.querySelector('.t-time').value,
-            activity: r.querySelector('.t-act').value
-        });
-    });
-
-    if(inserts.length > 0) await sb.from('tasks').insert(inserts);
-
-    const btn = document.querySelector('.btn-save');
-    const originalText = btn.innerHTML;
-    btn.innerHTML = '<i class="fa-solid fa-check"></i> Saved';
-    setTimeout(() => { btn.innerHTML = originalText; }, 2000);
-}
-
-// --- DOWNLOAD LOGIC WITH LINE BREAK FIX ---
 document.getElementById('downloadBtn').addEventListener('click', () => {
     const captureArea = document.getElementById('capture-area');
     const textarea = document.getElementById('food-plan-input');
-
-    // 1. Gumawa ng temporary DIV na kamukha ng textarea
     const div = document.createElement('div');
-    
-    // Kopyahin ang styles ng textarea para parehas itsura
-    div.className = 'food-plan-box'; 
-    div.style.minHeight = '80px';
-    div.style.border = '1px solid #333';
-    div.style.color = '#ffffff'; 
-    div.style.padding = '15px';
-    div.style.background = 'transparent';
-    div.style.fontFamily = "'Poppins', sans-serif";
-    div.style.fontSize = "0.9rem";
-    
-    // IMPORTANT: Palitan ang "Enter" (\n) ng HTML Break (<br>)
-    // Ito ang magpapa-baba sa text sa image
+    div.className = 'food-plan-box'; div.style.minHeight = '80px'; div.style.border = '1px solid #333'; div.style.color = '#ffffff'; div.style.padding = '15px'; div.style.background = 'transparent'; div.style.fontFamily = "'Poppins', sans-serif"; div.style.fontSize = "0.9rem";
     div.innerHTML = textarea.value.replace(/\n/g, '<br>');
-
-    // 2. Itago ang textarea, ilabas ang div
-    textarea.style.display = 'none';
-    textarea.parentNode.insertBefore(div, textarea);
-
-    // 3. Capture Image
-    html2canvas(captureArea, { 
-        backgroundColor: "#121212",
-        scale: 2 // Mas malinaw na quality
-    }).then(c => {
-        const a = document.createElement('a');
-        a.download = 'TimeIsGold_Schedule.png';
-        a.href = c.toDataURL();
-        a.click();
-
-        // 4. Ibalik sa dati (Remove div, Show textarea)
-        div.remove();
-        textarea.style.display = 'block';
+    textarea.style.display = 'none'; textarea.parentNode.insertBefore(div, textarea);
+    html2canvas(captureArea, { backgroundColor: "#121212", scale: 2 }).then(c => {
+        const a = document.createElement('a'); a.download = 'TimeIsGold_Schedule.png'; a.href = c.toDataURL(); a.click();
+        div.remove(); textarea.style.display = 'block';
     });
 });
-
-async function logout() {
-    await sb.auth.signOut();
-    window.location.href = 'index.html';
-}
-
+async function logout() { await sb.auth.signOut(); window.location.href = 'index.html'; }
 // --- POMODORO LOGIC ---
 function updateTimerDisplay() {
     const minutes = Math.floor(timeLeft / 60);
