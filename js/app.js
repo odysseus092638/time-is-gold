@@ -464,3 +464,17 @@ function toggleSidebar() {
     sidebar.classList.toggle('collapsed');
     main.classList.toggle('expanded');
 }
+// --- SPOTIFY PLAYLIST SWITCHER ---
+// --- SPOTIFY SWITCHER (UPDATED FOR MIXED LINKS) ---
+function changeSpotifySource(btn, fullUrl) {
+    // 1. Change Iframe Source directly
+    const frame = document.getElementById('spotify-frame');
+    frame.src = fullUrl;
+
+    // 2. Update Active Button Visuals
+    const allBtns = document.querySelectorAll('.btn-playlist');
+    allBtns.forEach(b => b.classList.remove('active'));
+    
+    // Add 'active' class to clicked button
+    btn.classList.add('active');
+}

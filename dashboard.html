@@ -233,32 +233,63 @@
             </div>
         </div>
     </div>
-    <!-- MODAL 5: SPOTIFY VIBE STATION -->
-<div class="modal fade" id="spotifyModal" tabindex="-1" aria-hidden="true" style="z-index: 1060;">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content" style="background: #000; border: 1px solid #333;">
-            <div class="modal-header border-secondary">
-                <h5 class="modal-title fw-bold text-white">
-                    <i class="fa-brands fa-spotify text-success"></i> &nbsp; Vibe Station
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" style="filter: invert(1);"></button>
-            </div>
-            <div class="modal-body p-0">
-                <!-- UPDATED PLAYLIST IFRAME -->
-                <iframe 
-                    style="border-radius: 0 0 12px 12px;" 
-                    src="https://open.spotify.com/embed/playlist/3sdEH7HfFE3d4xry5RnnLr?utm_source=generator" 
-                    width="100%" 
-                    height="352" 
-                    frameBorder="0" 
-                    allowfullscreen="" 
-                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
-                    loading="lazy">
-                </iframe>
-            </div>
-        </div>
-    </div>
-</div>
+    <!-- MODAL 5: SPOTIFY VIBE STATION (MULTI-PLAYLIST) -->
+    <div class="modal fade" id="spotifyModal" tabindex="-1" aria-hidden="true" style="z-index: 1060;">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="background: #000; border: 1px solid #333;">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title fw-bold text-white">
+                        <i class="fa-brands fa-spotify text-success"></i> &nbsp; Vibe Station
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" style="filter: invert(1);"></button>
+                </div>
+                
+                <div class="modal-body p-0">
+                    <!-- PLAYLIST SELECTOR (UPDATED LINKS) -->
+                    <div class="d-flex gap-2 p-3 overflow-auto" style="white-space: nowrap;">
+                        <!-- MY VIBE (Default) -->
+                        <button class="btn btn-sm btn-playlist active" 
+                            onclick="changeSpotifySource(this, 'https://open.spotify.com/embed/playlist/3sdEH7HfFE3d4xry5RnnLr?utm_source=generator')">
+                            My Vibe
+                        </button>
+                        
+                        <!-- STUDY -->
+                        <button class="btn btn-sm btn-playlist" 
+                            onclick="changeSpotifySource(this, 'https://open.spotify.com/embed/album/1kCHru7uhxBUdzkm4gzRQc?utm_source=generator')">
+                            📚 Study
+                        </button>
+                        
+                        <!-- COUNTRY MUSIC -->
+                        <button class="btn btn-sm btn-playlist" 
+                            onclick="changeSpotifySource(this, 'https://open.spotify.com/embed/album/4BbsHmXEghoPPevQjPnHXx?utm_source=generator')">
+                            🤠 Country
+                        </button>
+                        
+                        <!-- WORKOUT -->
+                        <button class="btn btn-sm btn-playlist" 
+                            onclick="changeSpotifySource(this, 'https://open.spotify.com/embed/playlist/4VDYMQDrr8C2BpGxjcgNcD?utm_source=generator')">
+                            💪 Workout
+                        </button>
+                        
+                        <!-- SLEEP -->
+                        <button class="btn btn-sm btn-playlist" 
+                            onclick="changeSpotifySource(this, 'https://open.spotify.com/embed/album/0yURloAyqmXCjQ1rmX0ltA?utm_source=generator')">
+                            🌙 Sleep
+                        </button>
+                    </div>
+
+                    <!-- IFRAME (Default is My Vibe) -->
+                    <iframe 
+                        id="spotify-frame"
+                        style="border-radius: 0 0 12px 12px;" 
+                        src="https://open.spotify.com/embed/playlist/3sdEH7HfFE3d4xry5RnnLr?utm_source=generator" 
+                        width="100%" 
+                        height="352" 
+                        frameBorder="0" 
+                        allowfullscreen="" 
+                        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                        loading="lazy">
+                    </iframe>
     <!-- MODAL 6: STICKY NOTES -->
     <div class="modal fade" id="notesModal" tabindex="-1" aria-hidden="true" style="z-index: 1060;">
         <div class="modal-dialog modal-dialog-centered">

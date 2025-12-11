@@ -518,3 +518,26 @@ select option {
     color: white !important;
     border-color: #555 !important;
 }
+/* --- SPOTIFY PLAYLIST BUTTONS --- */
+.btn-playlist {
+    background: transparent;
+    border: 1px solid #444;
+    color: #888;
+    border-radius: 20px;
+    padding: 5px 15px;
+    transition: all 0.3s ease;
+    font-size: 0.8rem;
+}
+
+.btn-playlist:hover {
+    border-color: var(--gold);
+    color: white;
+}
+
+/* Active State (Kapag ito ang pinili) */
+.btn-playlist.active {
+    background: var(--gold);
+    color: black;
+    border-color: var(--gold);
+    font-weight: bold;
+}
