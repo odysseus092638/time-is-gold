@@ -400,3 +400,14 @@ main.expanded {
     color: black !important;
     transform: scale(1.05);
 }
+/* Spotify Iframe Container */
+iframe {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5); /* Lagyan ng shadow para umangat */
+    border: 1px solid #333; /* Dark border para blend sa theme */
+    transition: transform 0.3s ease;
+}
+
+iframe:hover {
+    transform: scale(1.02); /* Slight zoom effect pag hinover */
+    border-color: var(--gold); /* Gold border glow */
+}
