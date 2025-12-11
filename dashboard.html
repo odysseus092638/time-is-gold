@@ -37,19 +37,26 @@
                 <div id="schedule-list">
                     <div class="text-center mt-5"><small class="text-muted">Loading...</small></div>
                 </div>
-                <!-- === SPOTIFY EMBED === -->
-<!-- SPOTIFY BUTTON (Replaces the Widget) -->
-                <button class="btn btn-outline-secondary border-secondary text-white w-100 mb-4" data-bs-toggle="modal" data-bs-target="#spotifyModal">
-                    <i class="fa-brands fa-spotify text-success"></i> &nbsp; Vibe Station
-                </button>
-                <!-- NEW: STICKY NOTES BUTTON -->
-                <button class="btn btn-outline-secondary border-secondary text-white w-100 mb-4" onclick="openNotes()">
-                    <i class="fa-solid fa-note-sticky text-warning"></i> &nbsp; Sticky Notes
-                </button>
-<!-- === END SPOTIFY === -->
+                <!-- SPACER (Para bumaba nang konti ang buttons mula sa listahan) -->
+                <div class="mt-4"></div>
 
+                <!-- GROUPED BUTTONS (VIBE & NOTES) -->
+                <!-- Gamit ang 'd-grid gap-2' para dikit sila -->
+                <div class="d-grid gap-2">
+                    
+                    <!-- SPOTIFY BUTTON -->
+                    <button class="btn btn-outline-secondary border-secondary text-white w-100" data-bs-toggle="modal" data-bs-target="#spotifyModal">
+                        <i class="fa-brands fa-spotify text-success"></i> &nbsp; Vibe Station
+                    </button>
 
-                <!-- BOTTOM BUTTONS -->
+                    <!-- STICKY NOTES BUTTON -->
+                    <button class="btn btn-outline-secondary border-secondary text-white w-100" onclick="openNotes()">
+                        <i class="fa-solid fa-note-sticky text-warning"></i> &nbsp; Sticky Notes
+                    </button>
+
+                </div>
+
+                <!-- BOTTOM BUTTONS (Settings & Logout) -->
                 <div class="mt-5 pt-5 border-top border-secondary">
                     <div class="d-flex gap-2">
                         <button onclick="openProfile()" class="btn btn-sm btn-outline-light flex-grow-1">
@@ -60,7 +67,6 @@
                         </button>
                     </div>
                 </div>
-            </nav>
 
            <!-- MAIN CONTENT -->
             <main class="col-md-9 ms-sm-auto col-lg-9 px-md-5 py-5" id="main-content">
@@ -233,7 +239,9 @@
             </div>
         </div>
     </div>
-    <!-- MODAL 5: SPOTIFY VIBE STATION (MULTI-PLAYLIST) -->
+   <!-- ================= MODALS AREA ================= -->
+
+    <!-- MODAL 5: SPOTIFY VIBE STATION -->
     <div class="modal fade" id="spotifyModal" tabindex="-1" aria-hidden="true" style="z-index: 1060;">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content" style="background: #000; border: 1px solid #333;">
@@ -243,86 +251,45 @@
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" style="filter: invert(1);"></button>
                 </div>
-                
                 <div class="modal-body p-0">
-                    <!-- PLAYLIST SELECTOR (UPDATED LINKS) -->
+                    <!-- PLAYLIST SELECTOR -->
                     <div class="d-flex gap-2 p-3 overflow-auto" style="white-space: nowrap;">
-                        <!-- MY VIBE (Default) -->
-                        <button class="btn btn-sm btn-playlist active" 
-                            onclick="changeSpotifySource(this, 'https://open.spotify.com/embed/playlist/3sdEH7HfFE3d4xry5RnnLr?utm_source=generator')">
-                            My Vibe
-                        </button>
-                        
-                        <!-- STUDY -->
-                        <button class="btn btn-sm btn-playlist" 
-                            onclick="changeSpotifySource(this, 'https://open.spotify.com/embed/album/1kCHru7uhxBUdzkm4gzRQc?utm_source=generator')">
-                            📚 Study
-                        </button>
-                        
-                        <!-- COUNTRY MUSIC -->
-                        <button class="btn btn-sm btn-playlist" 
-                            onclick="changeSpotifySource(this, 'https://open.spotify.com/embed/album/4BbsHmXEghoPPevQjPnHXx?utm_source=generator')">
-                            🤠 Country
-                        </button>
-                        
-                        <!-- WORKOUT -->
-                        <button class="btn btn-sm btn-playlist" 
-                            onclick="changeSpotifySource(this, 'https://open.spotify.com/embed/playlist/4VDYMQDrr8C2BpGxjcgNcD?utm_source=generator')">
-                            💪 Workout
-                        </button>
-                        
-                        <!-- SLEEP -->
-                        <button class="btn btn-sm btn-playlist" 
-                            onclick="changeSpotifySource(this, 'https://open.spotify.com/embed/album/0yURloAyqmXCjQ1rmX0ltA?utm_source=generator')">
-                            🌙 Sleep
-                        </button>
+                         <button class="btn btn-sm btn-playlist active" onclick="changeSpotifySource(this, 'https://open.spotify.com/embed/playlist/3sdEH7HfFE3d4xry5RnnLr?utm_source=generator')">My Vibe</button>
+                         <button class="btn btn-sm btn-playlist" onclick="changeSpotifySource(this, 'https://open.spotify.com/embed/album/1kCHru7uhxBUdzkm4gzRQc?utm_source=generator')">📚 Study</button>
+                         <button class="btn btn-sm btn-playlist" onclick="changeSpotifySource(this, 'https://open.spotify.com/embed/album/4BbsHmXEghoPPevQjPnHXx?utm_source=generator')">🤠 Country</button>
+                         <button class="btn btn-sm btn-playlist" onclick="changeSpotifySource(this, 'https://open.spotify.com/embed/playlist/4VDYMQDrr8C2BpGxjcgNcD?utm_source=generator')">💪 Workout</button>
+                         <button class="btn btn-sm btn-playlist" onclick="changeSpotifySource(this, 'https://open.spotify.com/embed/album/0yURloAyqmXCjQ1rmX0ltA?utm_source=generator')">🌙 Sleep</button>
                     </div>
-
-                    <!-- IFRAME (Default is My Vibe) -->
-                    <iframe 
-                        id="spotify-frame"
-                        style="border-radius: 0 0 12px 12px;" 
-                        src="https://open.spotify.com/embed/playlist/3sdEH7HfFE3d4xry5RnnLr?utm_source=generator" 
-                        width="100%" 
-                        height="352" 
-                        frameBorder="0" 
-                        allowfullscreen="" 
-                        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
-                        loading="lazy">
-                    </iframe>
-    <!-- MODAL 6: STICKY NOTES -->
-    <div class="modal fade" id="notesModal" tabindex="-1" aria-hidden="true" style="z-index: 1060;">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="background: transparent; border: none;">
-                <!-- Header na mukhang Tape/Paper Clip -->
-                <div class="modal-header border-0 p-0">
-                    <div style="background: var(--gold); width: 100%; padding: 10px; border-radius: 5px 5px 0 0; text-align: center; color: black; font-weight: bold;">
-                        <i class="fa-solid fa-pen"></i> &nbsp; QUICK NOTES
-                    </div>
-                </div>
-                <!-- Body -->
-                <div class="modal-body p-0">
-                    <textarea id="my-sticky-note" class="sticky-note-area" rows="12" placeholder="Write your thoughts here..."></textarea>
-                </div>
-                <!-- Footer (Floating Save Button) -->
-                <div class="text-center mt-3 pb-4"> <!-- Added pb-4 for spacing -->
-                    
-                    <!-- SAVE BUTTON (Tinanggal ko na yung style="background:black") -->
-                    <!-- Dahil dito, gagana na yung .btn-save class galing CSS -->
-                    <button class="btn btn-save shadow-lg px-4 py-2" onclick="saveNotes()">
-                        <i class="fa-solid fa-floppy-disk"></i> &nbsp; Save Notes
-                    </button>
-
-                    <!-- CLOSE BUTTON (Gamit na ang bagong .btn-cancel class) -->
-                    <button class="btn btn-cancel ms-2" data-bs-dismiss="modal">
-                        Close
-                    </button>
-                    
+                    <!-- IFRAME -->
+                    <iframe id="spotify-frame" style="border-radius: 0 0 12px 12px;" src="https://open.spotify.com/embed/playlist/3sdEH7HfFE3d4xry5RnnLr?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- MODAL 6: STICKY NOTES (MISSING FIX) -->
+    <div class="modal fade" id="notesModal" tabindex="-1" aria-hidden="true" style="z-index: 1060;">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="background: transparent; border: none;">
+                <div class="modal-header border-0 p-0">
+                    <div style="background: var(--gold); width: 100%; padding: 10px; border-radius: 5px 5px 0 0; text-align: center; color: black; font-weight: bold;">
+                        <i class="fa-solid fa-pen"></i> &nbsp; QUICK NOTES
+                    </div>
+                </div>
+                <div class="modal-body p-0">
+                    <textarea id="my-sticky-note" class="sticky-note-area" rows="12" placeholder="Write your thoughts here..."></textarea>
+                </div>
+                <div class="text-center mt-3 pb-4">
+                    <button class="btn btn-save shadow-lg px-4 py-2" onclick="saveNotes()">
+                        <i class="fa-solid fa-floppy-disk"></i> &nbsp; Save Notes
+                    </button>
+                    <button class="btn btn-cancel ms-2" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
